@@ -4,24 +4,24 @@ Thought of and programmed by **[Nikolas Karinja](https://instagram.com/______whi
 
 ## Info
 
-This ***"Engine"*** or what you may call library is made to help make your JavaScript life easier. In reality
+This **"Engine"** or what you may call library is made to help make your JavaScript life easier. In reality
 it's a hodge-podge of syntax shortcuts and methods that can be beneficial to you depending upon the needs
 of your project. This was mainly built for the programs and games I make for universal convenience. I know
 there is probably a better way to make a library like this but it has and continues to help my projects 
-out a ton. Use it for what you need.
+out a ton. Use it for what you need. As of right now there is a ***minified*** and ***unminified*** version of ``gearx-cs`` in the ``dist`` folder. The reason for the ``cs`` at the end stands for **Client Side** as I plan to integrate custom [socket.io](https://github.com/socketio/socket.io) methods into the engine for a ***simpler*** and more ***streamlined*** network experience.
 
 Other external libraries in which this program can utilize:
 
 * **[three.js](https://github.com/mrdoob/three.js/)**
 
-Again, thank you for choosing to use my ***"Engine"***
+Again, thank you for choosing to use my **"Engine"**
 
 ## Installation
 
 * If you intend to use any external libraries that GearX utilizes, they must be imported before GearX. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
 ```html
 <script src="three.js"></script>
-<script src="gearx-cs.js"></script> <!-- <script src="gearx-cs.min.js"></script> -->
+<script src="gearx-cs.js"></script>
 ```
 * As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
 
