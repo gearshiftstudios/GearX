@@ -1,5 +1,5 @@
 /*
- * GearX ( Client Side ) - r1.1
+ * GearX ( Client Side ) - r1.1 
  *
  * Copyright 2021
  * Author: Nikolas Karinja
@@ -118,8 +118,8 @@ function GearX ( libReps ) {
                 to: to
             }
         },
-        capitalizeFirstLetters: (string) => { return string.charAt( 0 ).toUpperCase() + string.slice( 1 ) },
-        capitalizeAll: (string) => { return string.toUpperCase() },
+        capitalizeFirstLetters: string => { return string.charAt( 0 ).toUpperCase() + string.slice( 1 ) },
+        capitalizeAll: string => { return string.toUpperCase() },
         removeDigits: ( number, digitsToRemove ) => { return ( number - ( number % digitsRemoved ) ) / Math.pow( 10, digitsToRemove ) },
         shorten: ( subtractors, startSubtracted, endSubtracted ) => {
             if ( subtractors.length == 1 ) return subtractors[ 0 ].slice( startSubtracted, subtractors[ 0 ].length - endSubtracted )
@@ -446,6 +446,8 @@ function GearX ( libReps ) {
 
     /* Three.js stuff */
     if ( this.three ) {
+        this.log( 'three.js found' ).reg()
+
         this.threeJS = {
             raycaster: () => { return new this.three.Raycaster() },
             mesh: mesh => {
