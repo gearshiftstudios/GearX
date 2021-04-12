@@ -4,7 +4,7 @@ Thought of and programmed by **[Nikolas Karinja](https://instagram.com/______whi
 
 ## Info
 
-This "Engine" or what you may call library is made to help make your JavaScript life easier. In reality
+This ***"Engine"*** or what you may call library is made to help make your JavaScript life easier. In reality
 it's a hodge-podge of syntax shortcuts and methods that can be beneficial to you depending upon the needs
 of your project. This was mainly built for the programs and games I make for universal convenience. I know
 there is probably a better way to make a library like this but it has and continues to help my projects 
@@ -14,7 +14,7 @@ Other external libraries in which this program can utilize:
 
 * **[three.js](https://github.com/mrdoob/three.js/)**
 
-Again, thank you for choosing to use my "Engine"
+Again, thank you for choosing to use my ***"Engine"***
 
 ## Installation
 
