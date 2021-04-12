@@ -29,7 +29,7 @@ Again, thank you for choosing to use my "Engine"
 
 * There is already a variable called "Engine" embedded in the script. In turn, any other declaration of a variable with this exact name and capitalization might cause errors.
 * The embedded "Engine" variable looks for "THREE" as its representative for [three.js](https://github.com/mrdoob/three.js/). If "THREE" does not exist, it will automatically cancel out all actions in that instance of the engine that utilize [three.js](https://github.com/mrdoob/three.js/).
-* Basically the same as most other libraries. If you are using <three.js> for example, you would use it like this:
+* Basically the same as most other libraries. If you are using [three.js](https://github.com/mrdoob/three.js/) for example, you would use it like this:
 ```javascript
 let engine = new GearX( { three: THREE } )
 ```
