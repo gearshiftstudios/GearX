@@ -1,4 +1,4 @@
-# GearX
+# The GearX Engine
 A library to make the JS life more relaxing.
 Thought of and programmed by **[Nikolas Karinja](https://instagram.com/______whiteboii)**
 
