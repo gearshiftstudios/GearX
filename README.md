@@ -8,7 +8,7 @@ This "Engine" or what you may call library is made to help make your JavaScript 
 it's a hodge-podge of syntax shortcuts and methods that can be beneficial to you depending upon the needs
 of your project. This was mainly built for the programs and games I make for universal convenience. I know
 there is probably a better way to make a library like this but it has and continues to help my projects 
-out a ton. Utilize for what you need.
+out a ton. Use it for what you need.
 
 Other external libraries in which this program can utilize:
 
