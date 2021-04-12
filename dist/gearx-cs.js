@@ -1,5 +1,5 @@
 /*
- * GearX ( Client Side ) - r1.1 
+ * GearX ( Client Side ) - r1.2
  *
  * Copyright 2021
  * Author: Nikolas Karinja
@@ -189,6 +189,7 @@ function GearX ( libReps ) {
 
                 events.forEach( event => { thisEl.addEventListener( event, listener, false ) } )
             },
+            child: childElement => thisEl.appendChild( childElement ),
             dropdown: ( id, direction, size ) => {
                 const _this = Element( element )
 
