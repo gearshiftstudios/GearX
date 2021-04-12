@@ -21,7 +21,7 @@ Again, thank you for choosing to use my ***"Engine"***
 * If you intend to use any external libraries that GearX utilizes, they must be imported before GearX. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
 ```html
 <script src="three.js"></script>
-<script src="gearx-cs.js"></script>
+<script src="gearx-cs.js"></script> <!-- <script src="gearx-cs.min.js"></script> -->
 ```
 * As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
 
