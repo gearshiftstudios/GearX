@@ -1,5 +1,5 @@
 /*
- * GearX ( Client Side ) - r1.0
+ * GearX ( Client Side ) - r1.1
  *
  * Copyright 2021
  * Author: Nikolas Karinja
