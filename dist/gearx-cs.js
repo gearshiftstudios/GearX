@@ -446,7 +446,8 @@ function GearX ( libReps ) {
 
     /* Three.js stuff */
     if ( this.three ) {
-        this.threeActions = {
+        this.threeJS = {
+            raycaster: () => { return new this.three.Raycaster() },
             mesh: mesh => {
                 const dispose = {
                     geometry: () => {
@@ -479,7 +480,7 @@ function GearX ( libReps ) {
             materials: {
                 faces: { names: [], data: [] },
                 retrieveIndex: name => {
-                    const face = () => { return this.threeActions.materials.faces.names.indexOf( name ) }
+                    const face = () => { return this.threeJS.materials.faces.names.indexOf( name ) }
 
                     return {
                         face: face
@@ -493,8 +494,8 @@ function GearX ( libReps ) {
                         } )
 
                         const face = () => {
-                            this.threeActions.materials.faces.data.push( _material )
-                            this.threeActions.materials.faces.names.push( name )
+                            this.threeJS.materials.faces.data.push( _material )
+                            this.threeJS.materials.faces.names.push( name )
                         }
 
                         return {
@@ -550,7 +551,7 @@ function GearX ( libReps ) {
             },
         }
     } else {
-        this.threeActions = {}
+        this.threeJS = {}
     }
 }
 
@@ -561,4 +562,3 @@ let Engine = new GearX( { three: THREE ? THREE : false } )
 let Bools = Engine.bools
 let Element = Engine.element
 let Operations = Engine.operations
-let ThreeActions = Engine.threeActions
