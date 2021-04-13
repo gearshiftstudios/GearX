@@ -1,5 +1,5 @@
 /*
- * GearX ( Client Side ) - r1.3
+ * GearX ( Client Side ) - r1.4
  *
  * Copyright 2021
  * Author: Nikolas Karinja
@@ -245,7 +245,7 @@ function GearX ( libReps ) {
 
                 Element( element ).render( `
                     <dropdown id="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };">
-                        <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c };">Option</dropdown-label>
+                        <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit };">Option</dropdown-label>
                     </dropdown>
                 ` ).custom()
             },
