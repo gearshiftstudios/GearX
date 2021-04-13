@@ -1,5 +1,5 @@
 /*
- * GearX ( Client Side ) - r1.2
+ * GearX ( Client Side ) - r1.3
  *
  * Copyright 2021
  * Author: Nikolas Karinja
@@ -146,7 +146,7 @@ function GearX ( libReps ) {
         const render = content => {
             thisEl.innerHTML += content
 
-            const custom = options => {
+            const custom = options => { 
                 try {
                     if ( options ) {
                         options.forEach( option => {
@@ -190,14 +190,61 @@ function GearX ( libReps ) {
                 events.forEach( event => thisEl.addEventListener( event, listener, false ) )
             },
             child: childElement => thisEl.appendChild( childElement ),
-            dropdown: ( id, values, attr ) => {
-                const _this = Element( element )
+            dropdown: ( id, values, pAttr, lAttr, aAttr, cAttr ) => {
+                let presets = {
+                    parent: {},
+                    label: {},
+                    arrow: {},
+                    content: {},
+                }
 
-                let presets = attr
+                if ( pAttr ) {
+                    presets.parent = {
+                        o: {
+                            h: pAttr.oH ? pAttr.oH : 'left',
+                            v: pAttr.oV ? pAttr.oV : 'top',
+                        },
+                        m: {
+                            l: pAttr.ml ? pAttr.ml : 0,
+                            r: pAttr.mR ? pAttr.mR : 0,
+                            t: pAttr.mT ? pAttr.mT : 0,
+                            b: pAttr.mB ? pAttr.mB : 0,
+                        },
+                        unit: pAttr.unit ? pAttr.unit : this.units.vh,
+                        width: pAttr.width ? pAttr.width : 6,
+                        height: pAttr.height ? pAttr.height : 3,
+                        bgColor: pAttr.bgColor ? pAttr.bgColor : 'rgba(0,0,0,0.4)',
+                        roundess: pAttr.roundness ? pAttr.roundness : '0vh',
+                        transition: pAttr.transition ? pAttr.transition : 'none',
+                        shadow: pAttr.shadow ? pAttr.shadow : 'none',
+                    }
 
-                _this.render( `
-                    <dropdown id="${ id }" style="position: absolute; ${ presets.orientation[ 0 ] ? presets.orientation[ 0 ] : 'left' }: 0; ${ presets.orientation[ 1 ] ? presets.orientation[ 1 ] : 'top' }: 0; width: ${ ( presets.width ? presets.width : 6 ) + ( presets.unit ? presets.unit : this.units.vh ) }; height: ${ ( presets.height ? presets.height : 3 ) + ( presets.unit ? presets.unit : this.units.vh ) }; background-color: ${ presets.bgColor ? presets.bgColor : 'rgba(0,0,0,0.4)' }; border-radius: ${ ( presets.roundness ? presets.roundness : '0.4' ) + ( presets.unit ? presets.unit : this.units.vh ) };">
-                        <dropdown-label></dropdown-label>
+                    if ( lAttr ) {
+                        presets.label = {
+                            t: {
+                                s: lAttr.tS ? lAttr.tS : 'auto', // text size
+                                f: lAttr.tF ? lAttr.tF : 'Trebuchet MS', // text font
+                                a: lAttr.tA ? lAttr.tA : 'center', // text alignment
+                                w: lAttr.tW ? lAttr.tW : 'bolder', // text weight
+                                c: lAttr.tC ? lAttr.tC : 'white', // text color
+                            },
+                        }
+
+                        if ( presets.label.t.s == 'auto' ) {
+                            if ( presets.parent.unit == this.units.vh ) presets.label.t.s = presets.parent.height - 1
+                            else if ( presets.parent.unit == this.units.px ) presets.label.t.s = presets.parent.height - 10
+                        }
+
+                        if ( aAttr ) {
+
+                        } else Engine.log( 'Input all neccessary parameters to create' ).error()
+
+                    } else Engine.log( 'Input all neccessary parameters to create' ).error()
+                } else Engine.log( 'Input all neccessary parameters to create' ).error()
+
+                Element( element ).render( `
+                    <dropdown id="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };">
+                        <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ presets.parent.height + presets.parent.unit } ); height: 100%; background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c };">Option</dropdown-label>
                     </dropdown>
                 ` ).custom()
             },
