@@ -187,34 +187,18 @@ function GearX ( libReps ) {
             listener: ( eventNames, listener ) => {
                 let events = eventNames.split( ' ' )
 
-                events.forEach( event => { thisEl.addEventListener( event, listener, false ) } )
+                events.forEach( event => thisEl.addEventListener( event, listener, false ) )
             },
             child: childElement => thisEl.appendChild( childElement ),
-            dropdown: ( id, direction, size ) => {
+            dropdown: ( id, values, attr ) => {
                 const _this = Element( element )
 
-                let presets = {
-                    offset: {
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                    },
-                    size: {
-                        width: size.width,
-                        height: size.height,
-                    },
-                }
-
-                if ( direction == 'lt' ) {
-                    presets.offset.left = 0
-                    presets.offset.top = presets.size.height
-                }
+                let presets = attr
 
                 _this.render( `
-                    <button-lt id="${ id }" class="dropdown">
-                        <container-${ direction } id="${ id }-content" class="dropdown-content"></container-${ direction }>
-                    </button-lt>
+                    <dropdown id="${ id }" style="position: absolute; ${ presets.orientation[ 0 ] ? presets.orientation[ 0 ] : 'left' }: 0; ${ presets.orientation[ 1 ] ? presets.orientation[ 1 ] : 'top' }: 0; width: ${ ( presets.width ? presets.width : 6 ) + ( presets.unit ? presets.unit : this.units.vh ) }; height: ${ ( presets.height ? presets.height : 3 ) + ( presets.unit ? presets.unit : this.units.vh ) }; background-color: ${ presets.bgColor ? presets.bgColor : 'rgba(0,0,0,0.4)' }; border-radius: ${ ( presets.roundness ? presets.roundness : '0.4' ) + ( presets.unit ? presets.unit : this.units.vh ) };">
+                        <dropdown-label></dropdown-label>
+                    </dropdown>
                 ` ).custom()
             },
             cl: cl => {
@@ -238,7 +222,7 @@ function GearX ( libReps ) {
         const make = content => {
             const style = () => {
                 try {
-                    thisEl.setAttribute( 'style', content )
+                    thisEl.setpresetsibute( 'style', content )
                 } catch(e) {
                     this.log( `Problem making style of element (${ element })` ).error()
                 }
