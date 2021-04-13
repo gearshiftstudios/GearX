@@ -236,16 +236,27 @@ function GearX ( libReps ) {
                             else if ( presets.parent.unit == this.units.px ) presets.label.t.s = presets.parent.height - 15
                         }
 
-                        // if ( aAttr ) {
+                        if ( aAttr ) {
+                            presets.arrow = {
+                                r: {
+                                    f: aAttr.rF ? aAttr.rF : -90, // from
+                                    t: aAttr.rT ? aAttr.rT : -180, // to
+                                },
+                                i: {
+                                    l: aAttr.iL ? aAttr.iL : 'https://www.pngkit.com/png/full/44-440751_transparent-triangle-white-white-triangle-png.png', // image link
+                                    s: aAttr.iS ? aAttr.rS : 40, // image size in percent
+                                },
+                                transition: aAttr.transition ? aAttr.transition : 'none',
+                            }
 
-                        // } else Engine.log( 'Input all neccessary parameters to create' ).error()
-
+                        } else Engine.log( 'Input all neccessary parameters to create' ).error()
                     } else Engine.log( 'Input all neccessary parameters to create' ).error()
                 } else Engine.log( 'Input all neccessary parameters to create' ).error()
 
                 Element( element ).render( `
                     <dropdown id="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };">
                         <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit };">Option</dropdown-label>
+                        <dropdown-arrow style="position: absolute; right: 0; top: 0; margin: 0; width: ${ presets.parent.height + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit };background-size: ${ presets.arrow.i.s }%; background-image: url( ${ presets.arrow.i.l } ); background-position: center; background-repeat: no-repeat; transform: rotate( ${ presets.arrow.r.f }deg ); transition: ${ presets.arrow.transition };"></dropdown-arrow>
                     </dropdown>
                 ` ).custom()
             },
