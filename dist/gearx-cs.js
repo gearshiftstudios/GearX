@@ -228,23 +228,24 @@ function GearX ( libReps ) {
                                 w: lAttr.tW ? lAttr.tW : 'bolder', // text weight
                                 c: lAttr.tC ? lAttr.tC : 'white', // text color
                             },
+                            padding: lAttr.padding ? lAttr.padding : 0.5, // text color
                         }
 
                         if ( presets.label.t.s == 'auto' ) {
-                            if ( presets.parent.unit == this.units.vh ) presets.label.t.s = presets.parent.height - 1
-                            else if ( presets.parent.unit == this.units.px ) presets.label.t.s = presets.parent.height - 10
+                            if ( presets.parent.unit == this.units.vh ) presets.label.t.s = presets.parent.height - 1.5
+                            else if ( presets.parent.unit == this.units.px ) presets.label.t.s = presets.parent.height - 15
                         }
 
-                        if ( aAttr ) {
+                        // if ( aAttr ) {
 
-                        } else Engine.log( 'Input all neccessary parameters to create' ).error()
+                        // } else Engine.log( 'Input all neccessary parameters to create' ).error()
 
                     } else Engine.log( 'Input all neccessary parameters to create' ).error()
                 } else Engine.log( 'Input all neccessary parameters to create' ).error()
 
                 Element( element ).render( `
                     <dropdown id="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };">
-                        <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ presets.parent.height + presets.parent.unit } ); height: 100%; background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c };">Option</dropdown-label>
+                        <dropdown-label style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c };">Option</dropdown-label>
                     </dropdown>
                 ` ).custom()
             },
