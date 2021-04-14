@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>GearX Dropdowns</title>
+        <link rel="shortcut icon" href="#">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=EB+Garamond"/>
+        <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    </head>
+    <style>
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            user-select: none;
+            outline: none;
+            box-shadow: inset 0 0 25vh black;
+            cursor: url( images/cursors/pointer_collar.png ), auto;
+        }
+    </style>
+    <body id="body">
+        <!-- GearX -->
+        <script src="../dist/gearx-cs.js"></script>
+        <script>
+            Engine.preloadImages( [ 'https://www.freeiconspng.com/thumbs/white-arrow-png/white-down-arrow-png-2.png', 'https://www.pngonly.com/wp-content/uploads/2018/11/down-arrow-png-10212.png' ] )
+
+            Element( 'body' ).add.dropdown( 'country-drop', new Array( 'England', 'France', 'Spain', 'Germany' ), {}, {
+                mL: 1, 
+                mT: 1, 
+                hR: '0.4vh 0.4vh 0 0',
+                hS: '0 0 1vh black, inset 0 0 1vh white',
+                width: 13,
+                roundness: '0.4vh', 
+                transition: '0.15s ease-out',   
+                shadow: '0 0 1vh black, inset 0 0 1vh black',
+            }, { 
+                tC: 'white',
+                tI: 'Pick a Country',
+                tF: 'EB Garamond',
+                tA: 'left',
+            }, { 
+                iL: 'https://www.freeiconspng.com/thumbs/white-arrow-png/white-down-arrow-png-2.png',
+                iS: 60,
+                rF: -270, 
+                rT: -360, 
+                transition: '0.15s ease-out',
+            }, {
+                vF: 'EB Garamond',
+                vT: '0.15 ease-out',
+                vSh: 'inset 0 0 1vh black',
+                hSh: 'inset 0 0 1vh white',
+                vShT: '0 0 1vh black',
+                hShT: '0 0 1vh white',
+                roundness: '0 0 0.4vh 0.4vh', 
+                transition: '0.15s ease-out',
+                shadow: '0 0 1vh black, inset 0 0 1vh black',
+            } )
+
+            Element( 'body' ).add.dropdown( 'food-drop', new Array( 'Pizza', 'Spaghetti', 'Ravioli', 'Penne', 'Maccaroni' ), null, {
+                mL: 1, 
+                mT: 5, 
+                hR: '0.4vh 0.4vh 0 0',
+                hS: '0 0 1vh black, inset 0 0 1vh white',
+                width: 15,
+                bgColor: 'rgba(62, 110, 122, 0.8)',
+                roundness: '0.4vh', 
+                transition: '0.15s ease-out',   
+                shadow: '0 0 1vh black, inset 0 0 1vh black',
+            }, { 
+                tC: 'white',
+                tI: 'Choose a Food',
+                tA: 'left',
+            }, { 
+                transition: '0.15s ease-out' 
+            }, {
+                vT: '0.15 ease-out',
+                hC: 'turquoise',
+                hShT: '0 0 1vh turquoise',
+                bgColor: 'rgba(62, 110, 122, 0.8)',
+                roundness: '0 0 0.4vh 0.4vh', 
+                transition: '0.15s ease-out',
+                shadow: '0 0 1vh black, inset 0 0 1vh black',
+            } )
+
+            Element( 'body' ).add.dropdown( '90s-drop', new Array( 'Rad', 'Tubular', 'Gnarly' ), {}, {
+                mL: 17, 
+                mT: 3, 
+                width: 11, 
+                bgColor: 'red' 
+            }, { 
+                tI: 'None', 
+                tS: 2, 
+                tA: 'center', 
+                tF: 'Zen Dots', 
+                tW: 'normal' 
+            }, { 
+                rF: -180, 
+                rT: -270, 
+                iL: 'https://www.pngonly.com/wp-content/uploads/2018/11/down-arrow-png-10212.png', 
+                iS: 70,
+            }, { 
+                vF: 'Shadows Into Light', 
+                vS: 2, 
+                hC: 'orange',
+                bgColor: 'purple',
+            } )
+        </script>
+    </body>
+</html>

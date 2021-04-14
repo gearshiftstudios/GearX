@@ -1,5 +1,5 @@
     /*
-    * GearX ( Client Side ) - r1.4
+    * GearX ( Client Side ) - r1.5
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -50,11 +50,20 @@
     * 
     */
 
-    function GearX ( libReps ) {
+    function GearX ( addEvents, libReps ) {
         let _this = this
+        let presets = {
+            libReps: {},
+        }
+
+        if ( libReps ) {
+            presets.libReps = {
+                three: libReps.three ? libReps.three : null
+            }
+        }
 
         /* essential variables */
-        this.three = libReps.three ? libReps.three : false // global variable that represents three.js
+        this.three = presets.libReps.three // global variable that represents three.js
         this.bools = new Array( true, false ) // array for random boolean method
 
         /* empty arrays and objects */
@@ -68,6 +77,10 @@
             px: 'px',
             vh: 'vh',
             vw: 'vw',
+        }
+
+        this.elements = {
+            dropdowns: {},
         }
         
         this.operations = {
@@ -141,6 +154,46 @@
         this.repeat = ( repeat, time ) => setInterval( repeat, time * 1000 )
 
         /* large methods */
+        this.dropdown = element => {
+            let dropdown = document.getElementById( element )
+
+            if ( dropdown.tagName == 'DROPDOWN' ) {
+                let presets = this.elements.dropdowns[ element ]
+
+                const values = {
+                    change: ( ...args ) => {
+                        let topOffset = 0
+                        let variation = 0
+
+                        this.element( `${ element }-content` ).clear()
+
+                        args.forEach( value => {
+                            this.element( `${ element }-content` ).render( `
+                                <dropdown-option id="${ element }-option-${ value }" label="${ value }" parent="${ element }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value }</dropdown-option>
+                            ` )
+                                
+                            topOffset += presets.content.v.h + ( presets.content.v.p * 2 )
+                            variation++
+        
+                            if ( variation == presets.content.v.v.length ) variation = 0
+                        } )
+
+                        presets.values = args
+
+                        if ( presets.content.overflow != 'auto' ) presets.content.maxHeight = ( presets.content.v.h + ( presets.content.v.p * 2 ) ) * presets.values.length
+                        else presets.content.overflow = 'auto'
+
+                        this.element( `${ element }-content` ).actions.setHeight( presets.content.maxHeight, presets.parent.unit )
+                        this.element( `${ element }-content` ).actions.setHeight( 0, presets.parent.unit )
+                    },
+                }
+
+                return {
+                    values: values
+                }
+            } else this.log( 'This element is not a dropdown' ).error()
+        }
+
         this.element = element => {
             const thisEl = document.getElementById( element )
             const render = content => {
@@ -190,22 +243,27 @@
                     events.forEach( event => thisEl.addEventListener( event, listener, false ) )
                 },
                 child: childElement => thisEl.appendChild( childElement ),
-                dropdown: ( id, values, pAttr, lAttr, aAttr, cAttr ) => {
+                dropdown: ( id, values, actions, pAttr, lAttr, aAttr, cAttr ) => {
                     let presets = {
                         parent: {},
                         label: {},
                         arrow: {},
                         content: {},
+                        values: values,
                     }
 
                     if ( pAttr ) {
                         presets.parent = {
+                            h: {
+                                r: pAttr.hR ? pAttr.hR : '0',
+                                s: pAttr.hS ? pAttr.hS : 'none',
+                            },
                             o: {
                                 h: pAttr.oH ? pAttr.oH : 'left',
                                 v: pAttr.oV ? pAttr.oV : 'top',
                             },
                             m: {
-                                l: pAttr.ml ? pAttr.ml : 0,
+                                l: pAttr.mL ? pAttr.mL : 0,
                                 r: pAttr.mR ? pAttr.mR : 0,
                                 t: pAttr.mT ? pAttr.mT : 0,
                                 b: pAttr.mB ? pAttr.mB : 0,
@@ -227,6 +285,7 @@
                                     a: lAttr.tA ? lAttr.tA : 'center', // text alignment
                                     w: lAttr.tW ? lAttr.tW : 'bolder', // text weight
                                     c: lAttr.tC ? lAttr.tC : 'white', // text color
+                                    i: lAttr.tI ? lAttr.tI : '0', // text info
                                 },
                                 padding: lAttr.padding ? lAttr.padding : 0.5, // text color
                             }
@@ -236,7 +295,7 @@
                                 else if ( presets.parent.unit == this.units.px ) presets.label.t.s = presets.parent.height - 15
                             } else {
                                 if ( presets.parent.unit == this.units.vh ) presets.label.padding = ( presets.parent.height - ( presets.label.t.s + 0.5 ) ) / 2
-                                else if ( presets.parent.unit == this.units.px ) presets.label.padding = ( presets.parent.height - ( presets.label.t.s + 15 ) ) / 2
+                                else if ( presets.parent.unit == this.units.px ) presets.label.padding = ( presets.parent.height - ( presets.label.t.s + 5 ) ) / 2
                             }
 
                             if ( aAttr ) {
@@ -247,43 +306,140 @@
                                     },
                                     i: {
                                         l: aAttr.iL ? aAttr.iL : 'https://www.pngkit.com/png/full/44-440751_transparent-triangle-white-white-triangle-png.png', // image link
-                                        s: aAttr.iS ? aAttr.rS : 40, // image size in percent
+                                        s: aAttr.iS ? aAttr.iS : 40, // image size in percent
                                     },
                                     transition: aAttr.transition ? aAttr.transition : 'none',
                                 }
 
                                 if ( cAttr ) {
                                     presets.content = {
-                                        bgColor: cAttr.bgColor ? cAttr.bgColor : 'rgba(0,0,0,0.4)',
+                                        v: {
+                                            w: null,
+                                            h: cAttr.vH ? cAttr.vH : 3, // value height
+                                            p: cAttr.vP ? cAttr.vP : 0.5, // value padding
+                                            s: cAttr.vS ? cAttr.vS : 'auto', // value text size
+                                            c: cAttr.vC ? cAttr.vC : 'white', // value text color
+                                            a: cAttr.vA ? cAttr.vA : 'center', // value text align
+                                            f: cAttr.vF ? cAttr.vF : 'Trebuchet MS', // value text font
+                                            t: cAttr.vT ? cAttr.vT : 'none', // value transition
+                                            v: cAttr.vV ? cAttr.vV : [ 'rgba(0,0,0,0.3)', 'transparent' ], // value background color variation
+                                            sh: cAttr.vSh ? cAttr.vSh : 'none', // value shadow
+                                            we: cAttr.vWe ? cAttr.vWe : 'bolder', // value text weight
+                                            shT: cAttr.vShT ? cAttr.vShT : 'none', // value text shadow
+                                        },
+                                        h: {
+                                            c: cAttr.hC ? cAttr.hC : 'white', // value text color
+                                            sh: cAttr.hSh ? cAttr.hSh : 'none', // value shadow
+                                            shT: cAttr.hShT ? cAttr.hShT : 'none', // value text shadow
+                                        },
+                                        overflow: 'hidden',
+                                        bgColor: cAttr.bgColor ? cAttr.bgColor : 'rgba(0,0,0,0.7)',
                                         maxHeight: cAttr.maxHeight ? cAttr.maxHeight : 'auto',
                                         roundness: cAttr.roundness ? cAttr.roundness : '0vh',
                                         transition: cAttr.transition ? cAttr.transition : 'none',
                                         shadow: cAttr.shadow ? cAttr.shadow : 'none',
                                     }
 
-                                    if ( presets.content.maxHeight == 'auto' ) {
-                                        presets.content.maxHeight = 24
+                                    if ( presets.content.v.s == 'auto' ) {
+                                        if ( presets.parent.unit == this.units.vh ) presets.content.v.s = presets.content.v.h - 1.5
+                                        else if ( presets.parent.unit == this.units.px ) presets.content.v.s = presets.content.v.h - 15
+                                    } else {
+                                        if ( presets.parent.unit == this.units.vh ) presets.content.v.p = ( presets.content.v.h - ( presets.content.v.s + 0.5 ) ) / 2
+                                        else if ( presets.parent.unit == this.units.px ) presets.content.v.p = ( presets.content.v.h - ( presets.content.v.s + 5 ) ) / 2
                                     }
+
+                                    presets.content.v.h -= presets.content.v.p * 2
+                                    presets.content.v.w = `calc( 100% - ${ ( presets.content.v.p * 2 ) + presets.parent.unit } )`
+
+                                    if ( presets.content.maxHeight == 'auto' ) presets.content.maxHeight = ( presets.content.v.h + ( presets.content.v.p * 2 ) ) * presets.values.length
+                                    else presets.content.overflow = 'auto'
 
                                 } else Engine.log( 'Input all neccessary parameters to create' ).error()
                             } else Engine.log( 'Input all neccessary parameters to create' ).error()
                         } else Engine.log( 'Input all neccessary parameters to create' ).error()
                     } else Engine.log( 'Input all neccessary parameters to create' ).error()
 
-                    Element( element ).render( `
-                        <dropdown id="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition }; z-index: 10;">
-                            <dropdown-label id="${ id }-label" style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit }; z-index: 10;">Option</dropdown-label>
-                            <dropdown-arrow id="${ id }-arrow" style="position: absolute; right: 0; top: 0; margin: 0; width: ${ presets.parent.height + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit };background-size: ${ presets.arrow.i.s }%; background-image: url( ${ presets.arrow.i.l } ); background-position: center; background-repeat: no-repeat; transform: rotate( ${ presets.arrow.r.f }deg ); transition: ${ presets.arrow.transition }; z-index: 10;"></dropdown-arrow>
-                            <dropdown-content id="${ id }-content" style="position: absolute; left: 0; top: 0; width: 100%; height: 0${ presets.parent.unit }; background-color: ${ presets.content.bgColor }; border-radius: ${ presets.content.roundness }; box-shadow: ${ presets.content.shadow }; margin-top: ${ presets.parent.height + presets.parent.unit }; transition: ${ presets.content.transition }; z-index: 10;"></dropdown-content>
+                    this.element( element ).render( `
+                        <dropdown id="${ id }" parent="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };" class="dropdown">
+                            <dropdown-label id="${ id }-label" parent="${ id }" style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit }; z-index: 10;" class="dropdown">${ presets.label.t.i }</dropdown-label>
+                            <dropdown-arrow id="${ id }-arrow" parent="${ id }" style="position: absolute; right: 0; top: 0; margin: 0; width: ${ presets.parent.height + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit };background-size: ${ presets.arrow.i.s }%; background-image: url( ${ presets.arrow.i.l } ); background-position: center; background-repeat: no-repeat; transform: rotate( ${ presets.arrow.r.f }deg ); transition: ${ presets.arrow.transition };" class="dropdown" z-index: 10;></dropdown-arrow>
+                            <dropdown-content id="${ id }-content" parent="${ id }" style="position: absolute; left: 0; top: 0; width: 100%; height: 0${ presets.parent.unit }; background-color: ${ presets.content.bgColor }; border-radius: ${ presets.content.roundness }; box-shadow: ${ presets.content.shadow }; margin-top: ${ presets.parent.height + presets.parent.unit }; transition: ${ presets.content.transition }; overflow-x: hidden; overflow-y: ${ presets.content.overflow }; z-index: 11;" class="dropdown"></dropdown-content>
                         </dropdown>
                     ` ).custom()
 
-                    this.element( id ).add.listener( 'mouseenter', e => {
-                        _this.element( `${ id }-content` ).actions.setHeight( presets.content.maxHeight, presets.parent.unit )
+                    let topOffset = 0
+                    let variation = 0
+
+                    presets.values.forEach( ( value, index ) => {
+                        this.element( `${ id }-content` ).render( `
+                            <dropdown-option id="${ id }-option-${ value }" label="${ value }" parent="${ id }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value }</dropdown-option>
+                        ` )
+                        
+                        topOffset += presets.content.v.h + ( presets.content.v.p * 2 )
+                        variation++
+
+                        if ( variation == presets.content.v.v.length ) variation = 0
                     } )
-                    this.element( id ).add.listener( 'mouseleave', e => {
-                        _this.element( `${ id }-content` ).actions.setHeight( 0, presets.parent.unit )
-                    } )
+
+                    this.elements.dropdowns[ id ] = presets
+
+                    if ( actions ) {
+                        // if ( actions.mouseover ) {
+                        //     this.events.document.mouseover.events[ 'dropdown' ] = actions.mouseover
+                        // }
+                    }
+                    
+                    if ( !this.events.document.mouseover.events[ 'dropdown-management' ] ) {
+                        this.events.document.mouseover.events[ 'dropdown-management' ] = target => {
+                            if ( target.classList.contains( 'dropdown' ) ) {
+                                let parent = target.getAttribute( 'parent' )
+
+                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.h.s )
+                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.h.r )
+                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.t }deg )` )
+                                _this.element( `${ parent }-content` ).actions.setHeight( this.elements.dropdowns[ parent ].content.maxHeight, this.elements.dropdowns[ parent ].parent.unit )
+
+                                if ( target.classList.contains( 'dropdown-option' ) ) {
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.h.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.h.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.h.c )
+                                }
+                            }
+                        }
+                    }
+
+                    if ( !this.events.document.mouseout.events[ 'dropdown-management' ] ) {
+                        this.events.document.mouseout.events[ 'dropdown-management' ] = target => {
+                            if ( target.classList.contains( 'dropdown' ) ) {
+                                let parent = target.getAttribute( 'parent' )
+
+                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.shadow )
+                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.roundness )
+                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
+                                _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
+
+                                if ( target.classList.contains( 'dropdown-option' ) ) {
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.v.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.v.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.v.c )
+                                }
+                            }
+                        }
+                    }
+
+                    if ( !this.events.document.click.events[ 'dropdown-option-management' ] ) {
+                        this.events.document.click.events[ 'dropdown-option-management' ] = target => {
+                            if ( target.classList.contains( 'dropdown-option' ) ) {
+                                let parent = target.getAttribute( 'parent' )
+                                
+                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.shadow )
+                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.roundness )
+                                _this.element( `${ parent }-label` ).actions.setText( target.getAttribute( 'label' ) )
+                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
+                                _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
+                            }
+                        }
+                    }
                 },
                 cl: cl => {
                     try {
@@ -307,7 +463,7 @@
                 const style = () => {
                     try {
                         thisEl.setpresetsibute( 'style', content )
-                    } catch(e) {
+                    } catch {
                         this.log( `Problem making style of element (${ element })` ).error()
                     }
                 }
@@ -360,6 +516,7 @@
                 addListItem: information => thisEl.innerHTML += `<li>${information}</li>`,
                 addListContainer: ( id, type ) => thisEl.innerHTML += `<${type} id='${id}'></${type}>`,
                 setAnimation: animation => thisEl.style.animation = animation,
+                setTextShadow: shadow => thisEl.style.textShadow = shadow,
                 setShadows: shadows => thisEl.style.boxShadow = shadows,
                 getTransform: () => { return thisEl.style.transform },
                 getValue: () => { return thisEl.value },
@@ -635,10 +792,47 @@
         } else {
             this.threeJS = {}
         }
+        
+        /* universal event manager */
+        this.events = {
+            document: {
+                mouseover: {
+                    events: {},
+                    listener: e => {
+                        for ( mEvent in this.events.document.mouseover.events ) {
+                            this.events.document.mouseover.events[ mEvent ]( e.target )
+                        }
+                    }
+                },
+                mouseout: {
+                    events: {},
+                    listener: e => {
+                        for ( mEvent in this.events.document.mouseout.events ) {
+                            this.events.document.mouseout.events[ mEvent ]( e.target )
+                        }
+                    }
+                },
+                click: {
+                    events: {},
+                    listener: e => {
+                        for ( mEvent in this.events.document.click.events ) {
+                            this.events.document.click.events[ mEvent ]( e.target )
+                        }
+                    }
+                },
+            },
+            init: () => {  
+                for ( mEvent in this.events.document ) {
+                    document.addEventListener( mEvent, this.events.document[ mEvent ].listener )
+                }
+            }
+        }
+
+        if ( addEvents ) this.events.init()
     }
 
     /* premade init */
-    let Engine = new GearX( { three: THREE ? THREE : false } )
+    let Engine = new GearX( true, {} )
 
     /* premade variables */
     let Bools = Engine.bools
