@@ -1,5 +1,5 @@
     /*
-    * GearX ( Client Side ) - r1.5
+    * GearX ( Client Side ) - r1.6
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -389,8 +389,7 @@
                         // }
                     }
                     
-                    if ( !this.events.document.mouseover.events[ 'dropdown-management' ] ) {
-                        this.events.document.mouseover.events[ 'dropdown-management' ] = target => {
+                        this.events.add( 'document', 'mouseover', 'dropdown-management', target => {
                             if ( target.classList.contains( 'dropdown' ) ) {
                                 let parent = target.getAttribute( 'parent' )
 
@@ -405,11 +404,9 @@
                                     _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.h.c )
                                 }
                             }
-                        }
-                    }
+                        } )
 
-                    if ( !this.events.document.mouseout.events[ 'dropdown-management' ] ) {
-                        this.events.document.mouseout.events[ 'dropdown-management' ] = target => {
+                        this.events.add( 'document', 'mouseout', 'dropdown-management', target => {
                             if ( target.classList.contains( 'dropdown' ) ) {
                                 let parent = target.getAttribute( 'parent' )
 
@@ -424,11 +421,9 @@
                                     _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.v.c )
                                 }
                             }
-                        }
-                    }
+                        } )
 
-                    if ( !this.events.document.click.events[ 'dropdown-option-management' ] ) {
-                        this.events.document.click.events[ 'dropdown-option-management' ] = target => {
+                        this.events.add( 'document', 'click', 'dropdown-option-management', target => {
                             if ( target.classList.contains( 'dropdown-option' ) ) {
                                 let parent = target.getAttribute( 'parent' )
                                 
@@ -438,8 +433,7 @@
                                 _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
                                 _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
                             }
-                        }
-                    }
+                        } )
                 },
                 cl: cl => {
                     try {
@@ -749,16 +743,16 @@
                 },
                 animations: {
                     list: new Array(),
-                    add: ( name, gltf ) => {
-                        Animations[ name ] = new this.three.AnimationMixer( gltf.scene )
-                        Animations[ name ].model = gltf
-                        Animations[ name ].animations = new Anims()
-                        Animations.list.push( name )
+                    add: ( name, model ) => {
+                        this.threeJS.animations[ name ] = new this.three.AnimationMixer( model.scene )
+                        this.threeJS.animations[ name ].model = model
+                        this.threeJS.animations[ name ].animations = new Anims()
+                        this.threeJS.animations.list.push( name )
                     },
                     set: name => {
-                        const current = number => Animations[ name ].animations.current = number
-                        const previous = number => Animations[ name ].animations.previous = number
-                        const playing = boolean => Animations[ name ].animations.playing = boolean
+                        const current = number => this.threeJS.animations[ name ].animations.current = number
+                        const previous = number => this.threeJS.animations[ name ].animations.previous = number
+                        const playing = boolean => this.threeJS.animations[ name ].animations.playing = boolean
 
                         return {
                         current: current,
@@ -767,18 +761,18 @@
                         }
                     },
                     play: name => {
-                        const all = () => Animations[ name ].model.animations.forEach( clip => Animations[ name ].clipAction( clip ).play() )
+                        const all = () => this.threeJS.animations[ name ].model.animations.forEach( clip => Animations[ name ].clipAction( clip ).play() )
                         const clip = number => {
-                            Animations[ name ].clipAction( Animations[ name ].model.animations[ number ] ).play()
+                            this.threeJS.animations[ name ].clipAction( this.threeJS.animations[ name ].model.animations[ number ] ).play()
 
-                            if ( Animations[ name ].animations.current ) {
-                                Animations.set( name ).previous( Animations[ name ].animations.current )
-                                Animations.set( name ).current( number )
-                            } else Animations.set( name ).current( number )
+                            if ( this.threeJS.animations[ name ].animations.current ) {
+                                this.threeJS.animations.set( name ).previous( this.threeJS.animations[ name ].animations.current )
+                                this.threeJS.animations.set( name ).current( number )
+                            } else this.threeJS.animations.set( name ).current( number )
 
-                            Animations.set( name ).playing( true )
+                            this.threeJS.animations.set( name ).playing( true )
                         }
-                        const previous = () => Animations[ name ].clipAction( Animations[ name ].animations.previous ).play()
+                        const previous = () => this.threeJS.animations[ name ].clipAction( this.threeJS.animations[ name ].animations.previous ).play()
 
                         return {
                             all: all,
@@ -786,7 +780,7 @@
                             previous: previous
                         }
                     },
-                    update: delta => Animations.list.forEach( object => Animations[ object ].update( delta ) ),
+                    update: delta => this.threeJS.animations.list.forEach( object => this.threeJS.animations[ object ].update( delta ) ),
                 },
             }
         } else {
@@ -798,28 +792,38 @@
             document: {
                 mouseover: {
                     events: {},
-                    listener: e => {
-                        for ( mEvent in this.events.document.mouseover.events ) {
-                            this.events.document.mouseover.events[ mEvent ]( e.target )
-                        }
-                    }
+                    listener: e => { for ( sEvent in this.events.document.mouseover.events ) this.events.document.mouseover.events[ sEvent ]( e.target ) },
                 },
-                mouseout: {
+                mouseout: { 
                     events: {},
-                    listener: e => {
-                        for ( mEvent in this.events.document.mouseout.events ) {
-                            this.events.document.mouseout.events[ mEvent ]( e.target )
-                        }
-                    }
+                    listener: e => { for ( sEvent in this.events.document.mouseout.events ) this.events.document.mouseout.events[ sEvent ]( e.target ) },
                 },
-                click: {
+                click: { 
                     events: {},
-                    listener: e => {
-                        for ( mEvent in this.events.document.click.events ) {
-                            this.events.document.click.events[ mEvent ]( e.target )
-                        }
-                    }
+                    listener: e => { for ( sEvent in this.events.document.click.events ) this.events.document.click.events[ sEvent ]( e.target ) },
                 },
+            },
+            check: ( type, mEvent, name ) => {
+                if ( this.events[ type ] ){
+                    if ( this.events[ type ][ mEvent ] ){
+                        if ( this.events[ type ][ mEvent ].events[ name ] ) return true 
+                        else return false 
+                    } else this.log( `"${ mEvent }" is not an event listener` ).error()
+                } else this.log( `"${ type }" is not an event type` ).error()
+            },
+            add: ( type, mEvent, name, func ) => {
+                if ( !this.events.check( type, mEvent, name ) ) this.events[ type ][ mEvent ].events[ name ] = func
+                else this.log( `An event named "${ name }" already exists` ).reg()
+
+                const overide = () => {
+                    this.events[ type ][ mEvent ].events[ name ] = func
+
+                    this.log( `An event named "${ name }" that already exists has now been overidden` ).reg()
+                }
+
+                return {
+                    overide: overide
+                }
             },
             init: () => {  
                 for ( mEvent in this.events.document ) {
@@ -830,11 +834,3 @@
 
         if ( addEvents ) this.events.init()
     }
-
-    /* premade init */
-    let Engine = new GearX( true, {} )
-
-    /* premade variables */
-    let Bools = Engine.bools
-    let Element = Engine.element
-    let Operations = Engine.operations
