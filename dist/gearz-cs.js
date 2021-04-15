@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.10
+    * GearZ ( Client Side ) - r1.11
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -804,11 +804,17 @@
                     },
                 },
                 animations: {
+                    animClass: class {
+                        constructor() {
+                            this.previous = null
+                            this.current = null
+                        }
+                    },
                     list: new Array(),
                     add: ( name, model ) => {
                         this.threeJS.animations[ name ] = new this.three.AnimationMixer( model.scene )
                         this.threeJS.animations[ name ].model = model
-                        this.threeJS.animations[ name ].animations = new Anims()
+                        this.threeJS.animations[ name ].animations = new this.threeJS.animations.animClass()
                         this.threeJS.animations.list.push( name )
                     },
                     set: name => {
