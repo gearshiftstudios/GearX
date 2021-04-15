@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.8
+    * GearZ ( Client Side ) - r1.9
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -729,7 +729,7 @@
                 clock: () => { return new this.three.Clock() },
                 raycaster: () => { return new this.three.Raycaster() },
                 cameras: {
-                    perspective: ( fov, aspect, near, far ) => { return this.three.PerspectiveCamera( fov, aspect, near, far ) },
+                    perspective: ( fov, aspect, near, far ) => { return new this.three.PerspectiveCamera( fov, aspect, near, far ) },
                 },
                 loaders: {
                     texture: path => { return new this.three.TextureLoader().setPath( path ) },
