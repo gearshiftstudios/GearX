@@ -829,7 +829,7 @@
                         }
                     },
                     play: name => {
-                        const all = () => this.threeJS.animations[ name ].model.animations.forEach( clip => Animations[ name ].clipAction( clip ).play() )
+                        const all = () => this.threeJS.animations[ name ].model.animations.forEach( clip => this.threeJS.animations[ name ].clipAction( clip ).play() )
                         const clip = number => {
                             this.threeJS.animations[ name ].clipAction( this.threeJS.animations[ name ].model.animations[ number ] ).play()
 
