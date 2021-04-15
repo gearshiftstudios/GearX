@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.7
+    * GearZ ( Client Side ) - r1.8
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -81,6 +81,50 @@
 
         this.elements = {
             dropdowns: {},
+        }
+
+        this.audio = {
+            stored: {},
+            play: ( audio, options ) => {
+                if ( this.audio.stored[ audio ] ) {
+                    this.audio.stored[ audio ].play()
+                    this.audio.stored[ audio ].volume = 1
+                    this.audio.stored[ audio ].loop = false
+
+                    if ( options ) {
+                        if ( options.volume ) this.audio.stored[ audio ].volume = options.volume
+                        if ( options.loop ) this.audio.stored[ audio ].loop = options.loop
+                    }
+                } else this.log( `"${ audio }" was not found.` ).error()
+            },
+            pause: audio => {
+                if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].pause()
+                else this.log( `"${ audio }" was not found.` ).error()
+            },
+            add: {
+                single: ( name, url ) => this.audio.stored[ name ] = new Audio( url ),
+                multi: audioArray => audioArray.forEach( audio => this.audio.stored[ audio[ 0 ] ] = new Audio( audio[ 1 ] ) ),
+            },
+            change: {
+                volume: ( audio, volume ) => {
+                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].volume = volume
+                    else this.log( `"${ audio }" was not found.` ).error()
+                },
+                loop: ( audio, loop ) => {
+                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].loop = loop
+                    else this.log( `"${ audio }" was not found.` ).error()
+                },
+            },
+            retrieve: {
+                volume: audio => {
+                    if ( this.audio.stored[ audio ] ) return this.audio.stored[ audio ].volume
+                    else this.log( `"${ audio }" was not found.` ).error()
+                },
+                loop: audio => {
+                    if ( this.audio.stored[ audio ] ) return this.audio.stored[ audio ].loop
+                    else this.log( `"${ audio }" was not found.` ).error()
+                }
+            }
         }
         
         this.operations = {
@@ -680,7 +724,33 @@
             this.log( 'three.js found' ).reg()
 
             this.threeJS = {
+                vec2: () => { return new this.three.Vector2() },
+                scene: () => { return new this.three.Scene() },
+                clock: () => { return new this.three.Clock() },
                 raycaster: () => { return new this.three.Raycaster() },
+                cameras: {
+                    perspective: ( fov, aspect, near, far ) => { return this.three.PerspectiveCamera( fov, aspect, near, far ) },
+                },
+                loaders: {
+                    texture: path => { return new this.three.TextureLoader().setPath( path ) },
+                    gltf: path => {
+                        if ( this.three.GLTFLoader != undefined ) return new this.three.GLTFLoader().setPath( path ) 
+                    },
+                },
+                renderers: {
+                    webGL: options => { return new this.three.WebGLRenderer( options ) },
+                    css2d: () => {
+                        if ( this.three.CSS2DRenderer != undefined ) return new this.three.CSS2DRenderer()
+                    },
+                    css3d: () => {
+                        if ( this.three.CSS3DRenderer != undefined ) return new this.three.CSS3DRenderer()
+                    },
+                },
+                controls: {
+                    map: ( camera, rendererElement ) => {
+                        if ( this.three.MapControls != undefined ) return new this.three.MapControls( camera, rendererElement )
+                    }
+                },
                 mesh: mesh => {
                     const dispose = {
                         geometry: () => {
@@ -705,10 +775,6 @@
                         hide: hide,
                         isShowing: isShowing,
                     }
-                },
-                loaders: {
-                    gltf: path => { return new this.three.GLTFLoader().setPath( path ) },
-                    texture: path => { return new this.three.TextureLoader().setPath( path ) },
                 },
                 materials: {
                     faces: { names: [], data: [] },
