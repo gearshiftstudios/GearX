@@ -1,5 +1,5 @@
     /*
-    * GearX ( Client Side ) - r1.6
+    * GearZ ( Client Side ) - r1.7
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -50,7 +50,7 @@
     * 
     */
 
-    function GearX ( addEvents, libReps ) {
+    function GearZ ( addEvents, libReps ) {
         let _this = this
         let presets = {
             libReps: {},
