@@ -39,4 +39,4 @@ You can make dropdown menus with custom UI based upon the properties you attribu
 ```javascript
 Engine.element( 'body' ).add.dropdown( 'sports-drop', [ 'Football', 'Baseball', 'Basketball' ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
 ```
-You can check this out along with 3 other dropdowns in this [example](https://gearshiftstudios.github.io/GearX/examples/dropdowns.html) here. With just a few more properties and attributes you can make look professional.
+You can check this out along with 3 other dropdowns in this [example](https://gearshiftstudios.github.io/GearZ/examples/dropdowns.html) here. With just a few more properties and attributes you can make look professional.
