@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.9
+    * GearZ ( Client Side ) - r1.10
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -696,7 +696,7 @@
         }
 
         this.then = ( func, waitTime ) => {
-            GearX.engine.wait( func, waitTime )
+            this.wait( func, waitTime )
 
             return {
                 then: this.then
@@ -753,12 +753,8 @@
                 },
                 mesh: mesh => {
                     const dispose = {
-                        geometry: () => {
-                            mesh.geometry.dispose()
-                        },
-                        material: () => {
-                            mesh.material.dispose()
-                        },
+                        geometry: () => mesh.geometry.dispose(),
+                        material: () => mesh.material.dispose(),
                         all: () => {
                             dispose.geometry()
                             dispose.material()
