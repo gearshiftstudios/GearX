@@ -500,7 +500,7 @@
             const make = content => {
                 const style = () => {
                     try {
-                        thisEl.setpresetsibute( 'style', content )
+                        thisEl.setAttribute( 'style', content )
                     } catch {
                         this.log( `Problem making style of element (${ element })` ).error()
                     }
