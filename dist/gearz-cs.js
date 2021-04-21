@@ -556,6 +556,8 @@
                 setAnimation: animation => thisEl.style.animation = animation,
                 setTextShadow: shadow => thisEl.style.textShadow = shadow,
                 setShadows: shadows => thisEl.style.boxShadow = shadows,
+                setAttr: ( attr, value ) => thisEl.setAttribute( attr, value ),
+                getAttr: attr => thisEl.getAttribute( attr ),
                 getTransform: () => { return thisEl.style.transform },
                 getValue: () => { return thisEl.value },
                 getValueLength: () => {  return thisEl.value.length },
@@ -704,7 +706,7 @@
         }
 
         this.log = content => {
-            const header = '[ GearX ]'
+            const header = '[ GearZ ]'
 
             const reg = () => {
                 console.log( `${ header } ${ content }` )
