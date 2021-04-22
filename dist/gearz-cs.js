@@ -490,17 +490,15 @@
 
             const check = {
                 all: ( value, func, waitTime ) => thisEl.querySelectorAll( value ).forEach( () => _this.wait( func, waitTime ) ),
-                cl: {
-                    includes: cl => { return thisEl.classList.contains( cl ) },
-                },
-                attr: attrib => {
-                    return thisEl.hasAttribute( attrib )
-                },
+                attr: attrib => { return thisEl.hasAttribute( attrib ) },
+                exists: () => { return document.getElementById( element ) },
                 isShowing: () => {
                     if ( thisEl.style.display == 'inline-block' ) return true
                     else if ( thisEl.style.display == 'none' ) return false
                 },
-                exists: () => { return document.getElementById( element ) },
+                cl: {
+                    includes: cl => { return thisEl.classList.contains( cl ) },
+                },
             }
 
             const once = {
