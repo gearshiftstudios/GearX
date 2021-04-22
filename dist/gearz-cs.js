@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.11
+    * GearZ ( Client Side ) - r1.13
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -487,28 +487,45 @@
                     }
                 }
             }
-            
+
             const check = {
                 all: ( value, func, waitTime ) => thisEl.querySelectorAll( value ).forEach( () => _this.wait( func, waitTime ) ),
                 cl: {
                     includes: cl => { return thisEl.classList.contains( cl ) },
                 },
+                attr: attrib => {
+                    return thisEl.hasAttribute( attrib )
+                },
                 isShowing: () => {
                     if ( thisEl.style.display == 'inline-block' ) return true
                     else if ( thisEl.style.display == 'none' ) return false
-                }
+                },
+                exists: () => { return document.getElementById( element ) },
             }
 
-            const onceShowing = ( func, interval ) => {
-                const interv = interval ? interval : 0.5
-
-                this.wait( () => {
-                    if ( this.element( element ).check.isShowing() ) {
-                        this.log( `${ element } is now showing` ).reg()
-                    
-                        this.wait( func, 0 )
-                    } else this.element( element ).onceShowing( func, interv )
-                }, interv )
+            const once = {
+                showing: ( func, interval ) => {
+                    const interv = interval ? interval : 0.5
+    
+                    this.wait( () => {
+                        if ( this.element( element ).check.isShowing() ) {
+                            this.log( `${ element } is now showing` ).reg()
+                        
+                            this.wait( func, 0 )
+                        } else this.element( element ).once.showing( func, interv )
+                    }, interv )
+                },
+                exists: ( func, interval ) => {
+                    const interv = interval ? interval : 0.5
+    
+                    this.wait( () => {
+                        if ( this.element( element ).check.exists() ) {
+                            this.log( `${ element } is now showing` ).reg()
+                        
+                            this.wait( func, 0 )
+                        } else this.element( element ).once.exists( func, interv )
+                    }, interv )
+                },
             }
 
             const make = content => {
@@ -651,36 +668,17 @@
                     }, 900)
                 },
             }
-            const exists = () => {
-                return document.getElementById(element)
-
-                function wait( func, interval ) {
-                    GearX.engine.wait( function() {
-                        if ( thisEl ) {
-                            GearX.engine.log( `${ element } now exists` ).reg()
-                        
-                            GearX.engine.wait( func, 0 )
-                        } else {
-                            wait()
-                        }
-                    }, interval )
-                }
-
-                return {
-                    wait: wait
-                }
-            }
+            
             return {
                 render: render,
                 dispose: dispose,
+                make: make,
+                clear: clear,
                 add: add,
                 remove: remove,
                 retrieve: retrieve,
-                clear: clear,
                 actions: actions,
-                make: make,
-                exists: exists,
-                onceShowing: onceShowing,
+                once: once,
                 check: check,
             }
         }
