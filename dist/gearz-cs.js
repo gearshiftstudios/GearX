@@ -495,6 +495,20 @@
                 isShowing: () => {
                     if ( thisEl.style.display == 'inline-block' ) return true
                     else if ( thisEl.style.display == 'none' ) return false
+
+                    const wait = ( func, interval ) => {
+                        this.wait( () => {
+                            if ( thisEl.style.display == 'inline-block' ) {
+                                this.log( `${ element } is now showing` ).reg()
+                            
+                                this.wait( func, 0 )
+                            } else wait()
+                        }, interval ? interval : 0.5 )
+                    }
+    
+                    return {
+                        wait: wait
+                    }
                 }
             }
             const make = content => {
