@@ -493,9 +493,6 @@
                     includes: cl => { return thisEl.classList.contains( cl ) },
                 },
                 isShowing: () => {
-                    if ( thisEl.style.display == 'inline-block' ) return true
-                    else if ( thisEl.style.display == 'none' ) return false
-
                     const whenShowing = ( func, interval ) => {
                         const interv = interval ? interval : 0.5
 
@@ -507,6 +504,9 @@
                             } else whenShowing( func, interv )
                         }, interv )
                     }
+
+                    if ( thisEl.style.display == 'inline-block' ) return true
+                    else if ( thisEl.style.display == 'none' ) return false
     
                     return {
                         whenShowing: whenShowing
