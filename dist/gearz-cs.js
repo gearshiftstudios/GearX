@@ -487,32 +487,30 @@
                     }
                 }
             }
+            
             const check = {
                 all: ( value, func, waitTime ) => thisEl.querySelectorAll( value ).forEach( () => _this.wait( func, waitTime ) ),
                 cl: {
                     includes: cl => { return thisEl.classList.contains( cl ) },
                 },
                 isShowing: () => {
-                    const whenShowing = ( func, interval ) => {
-                        const interv = interval ? interval : 0.5
-
-                        this.wait( () => {
-                            if ( thisEl.style.display == 'inline-block' ) {
-                                this.log( `${ element } is now showing` ).reg()
-                            
-                                this.wait( func, 0 )
-                            } else whenShowing( func, interv )
-                        }, interv )
-                    }
-
                     if ( thisEl.style.display == 'inline-block' ) return true
                     else if ( thisEl.style.display == 'none' ) return false
-    
-                    return {
-                        whenShowing: whenShowing
-                    }
                 }
             }
+
+            const onceShowing = ( func, interval ) => {
+                const interv = interval ? interval : 0.5
+
+                this.wait( () => {
+                    if ( this.element( element ).check.isShowing() ) {
+                        this.log( `${ element } is now showing` ).reg()
+                    
+                        this.wait( func, 0 )
+                    } else this.element( element ).onceShowing( func, interv )
+                }, interv )
+            }
+
             const make = content => {
                 const style = () => {
                     try {
@@ -526,6 +524,7 @@
                     style: style,
                 }
             }
+
             const dispose = () => {
                 try {
                     thisEl.remove()
@@ -533,6 +532,7 @@
                     this.log( `Problem disposing element (${ element })` ).error()
                 }
             }
+
             const clear = () => {
                 try {
                     thisEl.innerHTML = ''
@@ -540,6 +540,7 @@
                     this.log( `Problem clearing element (${ element })` ).error()
                 }
             }
+
             const actions = {
                 hide: time => this.wait( () => { thisEl.style.display = "none" }, time ),
                 show: time => this.wait( () => { thisEl.style.display = "inline-block" }, time ),
@@ -679,6 +680,7 @@
                 actions: actions,
                 make: make,
                 exists: exists,
+                onceShowing: onceShowing,
                 check: check,
             }
         }
