@@ -496,18 +496,20 @@
                     if ( thisEl.style.display == 'inline-block' ) return true
                     else if ( thisEl.style.display == 'none' ) return false
 
-                    const wait = ( func, interval ) => {
+                    const whenShowing = ( func, interval ) => {
+                        const interv = interval ? interval : 0.5
+
                         this.wait( () => {
                             if ( thisEl.style.display == 'inline-block' ) {
                                 this.log( `${ element } is now showing` ).reg()
                             
                                 this.wait( func, 0 )
-                            } else wait()
-                        }, interval ? interval : 0.5 )
+                            } else whenShowing( func, interv )
+                        }, interv )
                     }
     
                     return {
-                        wait: wait
+                        whenShowing: whenShowing
                     }
                 }
             }
