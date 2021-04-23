@@ -330,6 +330,7 @@
                                     w: lAttr.tW ? lAttr.tW : 'bolder', // text weight
                                     c: lAttr.tC ? lAttr.tC : 'white', // text color
                                     i: lAttr.tI ? lAttr.tI : '0', // text info
+                                    v: lAttr.tV ? lAttr.tV : '0', // text value
                                 },
                                 padding: lAttr.padding ? lAttr.padding : 0.5, // text color
                             }
@@ -405,7 +406,7 @@
 
                     this.element( element ).render( `
                         <dropdown id="${ id }" parent="${ id }" style="position: absolute; ${ presets.parent.o.h }: 0; ${ presets.parent.o.v }: 0; width: ${ presets.parent.width + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit }; background-color: ${ presets.parent.bgColor }; border-radius: ${ presets.parent.roundness }; box-shadow: ${ presets.parent.shadow }; margin: ${ presets.parent.m.t + presets.parent.unit } ${ presets.parent.m.r + presets.parent.unit } ${ presets.parent.m.b + presets.parent.unit } ${ presets.parent.m.l + presets.parent.unit }; transition: ${ presets.parent.transition };" class="dropdown">
-                            <dropdown-label id="${ id }-label" parent="${ id }" style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit }; padding-left: ${ ( presets.label.padding * 2 ) + presets.parent.unit }; z-index: 10;" class="dropdown">${ presets.label.t.i }</dropdown-label>
+                            <dropdown-label id="${ id }-label" parent="${ id }" val="" style="position: absolute; left: 0; top: 0; width: calc( 100% - ${ ( presets.parent.height + ( presets.label.padding * 2 ) ) + presets.parent.unit } ); height: ( 100% - ${ ( presets.label.padding * 2 ) + presets.parent.unit } ); background-color: transparent; box-shadow: none; font-family: ${ presets.label.t.f }; font-size: ${ presets.label.t.s + presets.parent.unit }; font-weight: ${ presets.label.t.w }; text-align: ${ presets.label.t.a };  color: ${ presets.label.t.c }; padding: ${ presets.label.padding + presets.parent.unit }; padding-left: ${ ( presets.label.padding * 2 ) + presets.parent.unit }; z-index: 10;" class="dropdown">${ presets.label.t.i }</dropdown-label>
                             <dropdown-arrow id="${ id }-arrow" parent="${ id }" style="position: absolute; right: 0; top: 0; margin: 0; width: ${ presets.parent.height + presets.parent.unit }; height: ${ presets.parent.height + presets.parent.unit };background-size: ${ presets.arrow.i.s }%; background-image: url( ${ presets.arrow.i.l } ); background-position: center; background-repeat: no-repeat; transform: rotate( ${ presets.arrow.r.f }deg ); transition: ${ presets.arrow.transition };" class="dropdown" z-index: 10;></dropdown-arrow>
                             <dropdown-content id="${ id }-content" parent="${ id }" style="position: absolute; left: 0; top: 0; width: 100%; height: 0${ presets.parent.unit }; background-color: ${ presets.content.bgColor }; border-radius: ${ presets.content.roundness }; box-shadow: ${ presets.content.shadow }; margin-top: ${ presets.parent.height + presets.parent.unit }; transition: ${ presets.content.transition }; overflow-x: hidden; overflow-y: ${ presets.content.overflow }; z-index: 11;" class="dropdown"></dropdown-content>
                         </dropdown>
@@ -472,6 +473,7 @@
                                 _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.shadow )
                                 _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.roundness )
                                 _this.element( `${ parent }-label` ).actions.setText( target.getAttribute( 'label' ) )
+                                _this.element( `${ parent }-label` ).actions.setAttr( 'val', target.getAttribute( 'val' ) )
                                 _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
                                 _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
                             }
