@@ -1,5 +1,5 @@
     /*
-    * GearZ ( Client Side ) - r1.13
+    * GearZ ( Client Side ) - r1.14
     *
     * Copyright 2021
     * Author: Nikolas Karinja
@@ -213,7 +213,7 @@
 
                         args.forEach( value => {
                             this.element( `${ element }-content` ).render( `
-                                <dropdown-option id="${ element }-option-${ value }" label="${ value }" parent="${ element }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value }</dropdown-option>
+                                <dropdown-option id="${ element }-option-${ value[ 1 ] }" label="${ value[ 0 ] }" parent="${ element }" val="${ value[ 1 ] }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value[ 0 ] }</dropdown-option>
                             ` )
                                 
                             topOffset += presets.content.v.h + ( presets.content.v.p * 2 )
@@ -416,7 +416,7 @@
 
                     presets.values.forEach( ( value, index ) => {
                         this.element( `${ id }-content` ).render( `
-                            <dropdown-option id="${ id }-option-${ value }" label="${ value }" parent="${ id }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value }</dropdown-option>
+                            <dropdown-option id="${ id }-option-${ value[ 1 ] }" label="${ value[ 0 ] }" parent="${ id }" val="${ value[ 1 ] }" style="position: absolute; left: 0; top: ${ topOffset + presets.parent.unit }; width: ${ presets.content.v.w }; height: ${ presets.content.v.h + presets.parent.unit }; background-color: ${ presets.content.v.v[ variation ] }; padding: ${ presets.content.v.p + presets.parent.unit }; box-shadow: ${ presets.content.v.sh }; font-family: ${ presets.content.v.f }; font-size: ${ presets.content.v.s + presets.parent.unit }; font-weight: ${ presets.content.v.we }; text-align: ${ presets.content.v.a }; color: ${ presets.content.v.c }; transition: ${ presets.content.v.t }; z-index: 12;" class="dropdown dropdown-option">${ value[ 0 ] }</dropdown-option>
                         ` )
                         
                         topOffset += presets.content.v.h + ( presets.content.v.p * 2 )
