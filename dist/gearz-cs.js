@@ -428,9 +428,7 @@
                     this.elements.dropdowns[ id ] = presets
 
                     if ( actions ) {
-                        // if ( actions.mouseover ) {
-                        //     this.events.document.mouseover.events[ 'dropdown' ] = actions.mouseover
-                        // }
+                        for ( mEvent in actions ) this.events.add( 'document', mEvent, mEvent[ 0 ], mEvent[ 1 ] )
                     }
                     
                         this.events.add( 'document', 'mouseover', 'dropdown-management', target => {
