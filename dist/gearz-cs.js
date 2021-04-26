@@ -442,9 +442,9 @@
                                 _this.element( `${ parent }-content` ).actions.setHeight( this.elements.dropdowns[ parent ].content.maxHeight, this.elements.dropdowns[ parent ].parent.unit )
 
                                 if ( target.classList.contains( 'dropdown-option' ) ) {
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.h.sh )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.h.shT )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.h.c )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.h.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.h.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.h.c )
                                 }
                             }
                         } )
@@ -459,9 +459,9 @@
                                 _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
 
                                 if ( target.classList.contains( 'dropdown-option' ) ) {
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.v.sh )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.v.shT )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'label' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.v.c )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.v.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.v.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.v.c )
                                 }
                             }
                         } )
