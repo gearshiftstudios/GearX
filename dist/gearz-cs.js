@@ -590,6 +590,7 @@
                 setShadows: shadows => thisEl.style.boxShadow = shadows,
                 setAttr: ( attr, value ) => thisEl.setAttribute( attr, value ),
                 getAttr: attr => thisEl.getAttribute( attr ),
+                getFilter: attr => { return thisEl.style.filter },
                 getTransform: () => { return thisEl.style.transform },
                 getValue: () => { return thisEl.value },
                 getValueLength: () => {  return thisEl.value.length },
