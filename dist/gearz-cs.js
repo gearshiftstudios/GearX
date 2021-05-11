@@ -103,7 +103,7 @@
                     this.audio.stored[ audio ].gearz = {
                         maxVolume: presets.volume,
                         startTime: presets.startTime,
-                        transitions = {
+                        transitions: {
                             start: [ null, presets.transitionDurations.start ], // repeater, duration
                             end: [ null, presets.transitionDurations.end ], // repeater, duration
                         }
