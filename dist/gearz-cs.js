@@ -87,14 +87,50 @@
             stored: {},
             play: ( audio, options ) => {
                 if ( this.audio.stored[ audio ] ) {
-                    this.audio.stored[ audio ].play()
-                    this.audio.stored[ audio ].volume = 1
-                    this.audio.stored[ audio ].loop = false
-
-                    if ( options ) {
-                        if ( options.volume ) this.audio.stored[ audio ].volume = options.volume
-                        if ( options.loop ) this.audio.stored[ audio ].loop = options.loop
+                    const presets = {
+                        volume: options.volume ? options.volume : 1,
+                        loop: options.loop ? options.loop : false,
+                        startTime: options.startTime ? options.startTime : 0,
+                        transitionDurations: {
+                            start: options.tSd ? options.tSd : 0,
+                            end: options.tEd ? options.tEd : 0,
+                        }
                     }
+
+                    this.audio.stored[ audio ].volume = presets.volume
+                    this.audio.stored[ audio ].loop = presets.loop
+                    this.audio.stored[ audio ].currentTime = presets.startTime
+                    this.audio.stored[ audio ].gearz = {
+                        maxVolume: presets.volume,
+                        startTime: presets.startTime,
+                        transitions = {
+                            start: [ null, presets.transitionDurations.start ], // repeater, duration
+                            end: [ null, presets.transitionDurations.end ], // repeater, duration
+                        }
+                    }
+
+                    this.audio.stored[ audio ].play()
+
+                    this.audio.stored[ audio ].addEventListener( 'play', () => {
+                        if ( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] ) this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
+
+                        const volumeInterval = this.audio.stored[ audio ].gearz.maxVolume / ( ( this.audio.stored[ audio ].gearz.transitions.start[ 1 ] * 1000 ) / 100 )
+
+                        this.audio.stored[ audio ].gearz.transitions.start[ 0 ] = this.repeat( () => {
+                            if ( ( this.audio.stored[ audio ].currentTime <= this.audio.stored[ audio ].gearz.transitions.start[ 1 ] ) && ( this.audio.stored[ audio ].volume != this.audio.stored[ audio ].gearz.maxVolume ) ) {
+                                this.audio.stored[ audio ].volume += volumeInterval
+                            }
+                            
+                            if ( this.audio.stored[ audio ].volume >= this.audio.stored[ audio ].gearz.maxVolume ) {
+                                this.audio.stored[ audio ].volume = this.audio.stored[ audio ].gearz.maxVolume
+
+                                this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
+                            }
+                        }, 0.1 )
+                    } )
+                    
+                    this.audio.stored[ audio ].addEventListener( 'playing', () => {
+                    } )
                 } else this.log( `"${ audio }" was not found.` ).error()
             },
             pause: audio => {
@@ -105,24 +141,48 @@
                 single: ( name, url ) => this.audio.stored[ name ] = new Audio( url ),
                 multi: audioArray => audioArray.forEach( audio => this.audio.stored[ audio[ 0 ] ] = new Audio( audio[ 1 ] ) ),
             },
-            change: {
-                volume: ( audio, volume ) => {
-                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].volume = volume
+            set: audio => {
+                const volume = v => {
+                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].volume = v
                     else this.log( `"${ audio }" was not found.` ).error()
-                },
-                loop: ( audio, loop ) => {
-                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].loop = loop
+                }
+
+                const loop = l => {
+                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].loop = l
                     else this.log( `"${ audio }" was not found.` ).error()
-                },
+                }
+
+                const currentTime = t => {
+                    if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].currentTime = t
+                    else this.log( `"${ audio }" was not found.` ).error()
+                }
+
+                return {
+                    volume: volume,
+                    loop: loop,
+                    currentTime: currentTime,
+                }
             },
-            retrieve: {
-                volume: audio => {
+            get: audio => {
+                const volume = () => {
                     if ( this.audio.stored[ audio ] ) return this.audio.stored[ audio ].volume
                     else this.log( `"${ audio }" was not found.` ).error()
-                },
-                loop: audio => {
+                }
+
+                const loop = () => {
                     if ( this.audio.stored[ audio ] ) return this.audio.stored[ audio ].loop
                     else this.log( `"${ audio }" was not found.` ).error()
+                }
+
+                const currentTime = () => {
+                    if ( this.audio.stored[ audio ] ) return this.audio.stored[ audio ].currentTime
+                    else this.log( `"${ audio }" was not found.` ).error()
+                }
+
+                return {
+                    volume: volume,
+                    loop: loop,
+                    currentTime: currentTime,
                 }
             }
         }
