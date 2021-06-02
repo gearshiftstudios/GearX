@@ -112,30 +112,60 @@
                     this.audio.stored[ audio ].play()
 
                     this.audio.stored[ audio ].addEventListener( 'play', () => {
-                        if ( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] ) this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
-
-                        const volumeInterval = this.audio.stored[ audio ].gearz.maxVolume / ( ( this.audio.stored[ audio ].gearz.transitions.start[ 1 ] * 1000 ) / 100 )
-
-                        this.audio.stored[ audio ].gearz.transitions.start[ 0 ] = this.repeat( () => {
-                            if ( ( this.audio.stored[ audio ].currentTime <= this.audio.stored[ audio ].gearz.transitions.start[ 1 ] ) && ( this.audio.stored[ audio ].volume != this.audio.stored[ audio ].gearz.maxVolume ) ) {
-                                this.audio.stored[ audio ].volume += volumeInterval
-                            }
-                            
-                            if ( this.audio.stored[ audio ].volume >= this.audio.stored[ audio ].gearz.maxVolume ) {
-                                this.audio.stored[ audio ].volume = this.audio.stored[ audio ].gearz.maxVolume
-
-                                this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
-                            }
-                        }, 0.1 )
+                        this.audio.fade( audio ).inward( this.audio.stored[ audio ].gearz.transitions.start[ 1 ] )
                     } )
                     
                     this.audio.stored[ audio ].addEventListener( 'playing', () => {
+                        if ( ( this.audio.stored[ audio ].duration - this.audio.stored[ audio ].currentTime ) == this.audio.stored[ audio ].gearz.transitions.end[ 1 ] ) this.audio.fade( audio ).out( this.audio.stored[ audio ].gearz.transitions.end[ 1 ] )
                     } )
                 } else this.log( `"${ audio }" was not found.` ).error()
             },
             pause: audio => {
                 if ( this.audio.stored[ audio ] ) this.audio.stored[ audio ].pause()
                 else this.log( `"${ audio }" was not found.` ).error()
+            },
+            fade: audio => {
+                const inward = duration => {
+                    if ( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] ) this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
+
+                    this.audio.stored[ audio ].volume = 0
+
+                    const volumeInterval = this.audio.stored[ audio ].gearz.maxVolume / ( ( duration * 1000 ) / 100 )
+
+                    this.audio.stored[ audio ].gearz.transitions.start[ 0 ] = this.repeat( () => {
+                        if ( ( this.audio.stored[ audio ].currentTime <= ( this.audio.stored[ audio ].gearz.startTime + duration ) ) && ( this.audio.stored[ audio ].volume != this.audio.stored[ audio ].gearz.maxVolume ) ) this.audio.stored[ audio ].volume += volumeInterval
+                            
+                        if ( this.audio.stored[ audio ].volume >= this.audio.stored[ audio ].gearz.maxVolume ) {
+                            this.audio.stored[ audio ].volume = this.audio.stored[ audio ].gearz.maxVolume
+
+                            this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.start[ 0 ] )
+                        }
+                    }, 0.1 )
+                }
+                
+                const out = duration => {
+                    if ( this.audio.stored[ audio ].gearz.transitions.end[ 0 ] ) this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.end[ 0 ] )
+
+                    const volumeInterval = this.audio.stored[ audio ].gearz.maxVolume / ( ( duration * 1000 ) / 100 )
+
+                    this.audio.stored[ audio ].gearz.transitions.end[ 0 ] = this.repeat( () => {
+                        if ( this.audio.stored[ audio ].volume != 0 ) {
+                            if ( this.audio.stored[ audio ].volume - volumeInterval < 0 ) this.audio.stored[ audio ].volume = 0
+                            else this.audio.stored[ audio ].volume -= volumeInterval
+                        }
+
+                        if ( this.audio.stored[ audio ].volume <= 0 ) {
+                            this.audio.stored[ audio ].volume = 0
+
+                            this.clear.repeater( this.audio.stored[ audio ].gearz.transitions.end[ 0 ] )
+                        }
+                    }, 0.1 )
+                }
+
+                return {
+                    inward: inward,
+                    out: out,
+                }
             },
             add: {
                 single: ( name, url ) => this.audio.stored[ name ] = new Audio( url ),
