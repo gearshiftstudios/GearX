@@ -28,7 +28,7 @@
     *            ___________________HTML__________________
     *            |                                       |
     *   EXAMPLE: |  <script src="three.js"></script>     |
-    *            |  <script src="gearx-cs.js"></script>  |
+    *            |  <script src="gearz-cs.js"></script>  |
     *            |_______________________________________|
     * 
     * - As of this release there is no NPM package of this engine so it must be installed through HTML or Shorthand JavaScript
@@ -41,18 +41,18 @@
     *   will automatically cancel out all actions in that instance of the engine that utilize <three.js>.
     * - Basically the same as most other libraries. If you are using <three.js> for example, you would use it like this:
     * 
-    *            ____________________JavaScript__________________
-    *            |                                              |
-    *   EXAMPLE: |  let engine = new GearX( { three: THREE } )  |
-    *            |______________________________________________|
+    *            _______________________JavaScript_____________________
+    *            |                                                    |
+    *   EXAMPLE: |  let engine = new GearZ( true, { three: THREE } )  |
+    *            |____________________________________________________|
     * 
     *   Of course the variable chosen as the value for the "three" property depends on what you have <three.js> represented as.
     * 
     */
 
-    function GearZ ( addEvents, libReps ) {
-        let _this = this
-        let presets = {
+    function GearZ ( addEvents, libReps, loadStored3DData ) {
+        const _this = this
+        const presets = {
             libReps: {},
         }
 
@@ -79,9 +79,7 @@
             vw: 'vw',
         }
 
-        this.elements = {
-            dropdowns: {},
-        }
+        this.elements = { dropdowns: {} }
 
         this.audio = {
             stored: {},
@@ -218,17 +216,28 @@
         }
         
         this.operations = {
+            create: {
+                id: length => {
+                    let result = ''
+
+                    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+                    for ( let i = 0; i < length; i++ ) result += characters.charAt( Math.floor( Math.random() * characters.length) )
+
+                    return result
+                },
+            },
             parse: item => {
                 try {
                     return JSON.parse( item )
-                } catch {
+                } catch ( e ) {
                     this.log( 'Could not parse item' ).error()
                 }
             },
             stringify: item => {
                 try {
                     return JSON.stringify( item )
-                } catch {
+                } catch ( e ) {
                     this.log( 'Could not stringify item' ).error()
                 }
             },
@@ -317,8 +326,8 @@
                         if ( presets.content.overflow != 'auto' ) presets.content.maxHeight = ( presets.content.v.h + ( presets.content.v.p * 2 ) ) * presets.values.length
                         else presets.content.overflow = 'auto'
 
-                        this.element( `${ element }-content` ).actions.setHeight( presets.content.maxHeight, presets.parent.unit )
-                        this.element( `${ element }-content` ).actions.setHeight( 0, presets.parent.unit )
+                        this.element( `${ element }-content` ).set.height( presets.content.maxHeight, presets.parent.unit )
+                        this.element( `${ element }-content` ).set.height( 0, presets.parent.unit )
                     },
                 }
 
@@ -329,23 +338,16 @@
         }
 
         this.element = element => {
-            const thisEl = document.getElementById( element )
+            const _element = document.getElementById( element )
             const render = content => {
-                thisEl.innerHTML += content
+                _element.innerHTML += content
 
-                const custom = options => { 
-                    try {
-                        if ( options ) {
-                            options.forEach( option => {
-                                if ( option[ 1 ].display ) {
-                                    document.getElementById( option[ 0 ] ).style.display = 'inline-block'
-                                } else {
-                                    document.getElementById( option[ 0 ] ).style.display = 'none'
-                                }
-                            } )
-                        }
-                    } catch {
-                        this.log( `Problem adding custom content to element (${ element })` ).error()
+                const custom = options => {
+                    if ( options ) {
+                        options.forEach( option => {
+                            if ( option[ 1 ].display ) document.getElementById( option[ 0 ] ).style.display = 'inline-block'
+                            else document.getElementById( option[ 0 ] ).style.display = 'none'
+                        } )
                     }
                 }
 
@@ -354,29 +356,23 @@
                 }
             }
             const retrieve = {
-                id: () => { return thisEl.id },
+                id: () => { return _element.id },
             }
             const remove = {
                 listener: ( eventNames, listener ) => {
-                    let events = eventNames.split( ' ' )
+                    const events = eventNames.split( ' ' )
 
-                    events.forEach( event => { thisEl.removeEventListener( event, listener, false ) } )
+                    events.forEach( event => { _element.removeEventListener( event, listener, false ) } )
                 },
-                cl: cl => {
-                    try {
-                        thisEl.classList.remove( cl )
-                    } catch {
-                        this.log( `Problem removing class to element (${ element })` ).error()
-                    }
-                }
+                cl: cl => _element.classList.remove( cl )
             }
             const add = {
                 listener: ( eventNames, listener ) => {
                     let events = eventNames.split( ' ' )
 
-                    events.forEach( event => thisEl.addEventListener( event, listener, false ) )
+                    events.forEach( event => _element.addEventListener( event, listener, false ) )
                 },
-                child: childElement => thisEl.appendChild( childElement ),
+                child: childElement => _element.appendChild( childElement ),
                 dropdown: ( id, values, actions, pAttr, lAttr, aAttr, cAttr ) => {
                     let presets = {
                         parent: {},
@@ -519,256 +515,251 @@
                     this.elements.dropdowns[ id ] = presets
 
                     if ( actions ) {
-                        for ( mEvent in actions ) this.events.add( 'document', mEvent, mEvent[ 0 ], mEvent[ 1 ] )
+                        for ( const mEvent in actions ) this.events.add( 'document', mEvent, mEvent[ 0 ], mEvent[ 1 ] )
                     }
                     
                         this.events.add( 'document', 'mouseover', 'dropdown-management', target => {
                             if ( target.classList.contains( 'dropdown' ) ) {
-                                let parent = target.getAttribute( 'parent' )
+                                const parent = target.getAttribute( 'parent' )
 
-                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.h.s )
-                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.h.r )
-                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.t }deg )` )
-                                _this.element( `${ parent }-content` ).actions.setHeight( this.elements.dropdowns[ parent ].content.maxHeight, this.elements.dropdowns[ parent ].parent.unit )
+                                _this.element( parent ).set.boxShadow( this.elements.dropdowns[ parent ].parent.h.s )
+                                _this.element( parent ).set.roundness( this.elements.dropdowns[ parent ].parent.h.r )
+                                _this.element( `${ parent }-arrow` ).set.transform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.t }deg )` )
+                                _this.element( `${ parent }-content` ).set.height( this.elements.dropdowns[ parent ].content.maxHeight, this.elements.dropdowns[ parent ].parent.unit )
 
                                 if ( target.classList.contains( 'dropdown-option' ) ) {
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.h.sh )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.h.shT )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.h.c )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.boxShadow( this.elements.dropdowns[ parent ].content.h.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.textShadow( this.elements.dropdowns[ parent ].content.h.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.textColor( this.elements.dropdowns[ parent ].content.h.c )
                                 }
                             }
                         } )
 
                         this.events.add( 'document', 'mouseout', 'dropdown-management', target => {
                             if ( target.classList.contains( 'dropdown' ) ) {
-                                let parent = target.getAttribute( 'parent' )
+                                const parent = target.getAttribute( 'parent' )
 
-                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.shadow )
-                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.roundness )
-                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
-                                _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
+                                _this.element( parent ).set.boxShadow( this.elements.dropdowns[ parent ].parent.shadow )
+                                _this.element( parent ).set.roundness( this.elements.dropdowns[ parent ].parent.roundness )
+                                _this.element( `${ parent }-arrow` ).set.transform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
+                                _this.element( `${ parent }-content` ).set.height( 0, this.elements.dropdowns[ parent ].parent.unit )
 
                                 if ( target.classList.contains( 'dropdown-option' ) ) {
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setShadows( this.elements.dropdowns[ parent ].content.v.sh )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextShadow( this.elements.dropdowns[ parent ].content.v.shT )
-                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).actions.setTextColor( this.elements.dropdowns[ parent ].content.v.c )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.boxShadow( this.elements.dropdowns[ parent ].content.v.sh )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.textShadow( this.elements.dropdowns[ parent ].content.v.shT )
+                                    _this.element( `${ parent }-option-${ target.getAttribute( 'val' ) }` ).set.textColor( this.elements.dropdowns[ parent ].content.v.c )
                                 }
                             }
                         } )
 
                         this.events.add( 'document', 'click', 'dropdown-option-management', target => {
                             if ( target.classList.contains( 'dropdown-option' ) ) {
-                                let parent = target.getAttribute( 'parent' )
+                                const parent = target.getAttribute( 'parent' )
                                 
-                                _this.element( parent ).actions.setShadows( this.elements.dropdowns[ parent ].parent.shadow )
-                                _this.element( parent ).actions.setRoundness( this.elements.dropdowns[ parent ].parent.roundness )
-                                _this.element( `${ parent }-label` ).actions.setText( target.getAttribute( 'label' ) )
-                                _this.element( `${ parent }-label` ).actions.setAttr( 'val', target.getAttribute( 'val' ) )
-                                _this.element( `${ parent }-arrow` ).actions.setTransform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
-                                _this.element( `${ parent }-content` ).actions.setHeight( 0, this.elements.dropdowns[ parent ].parent.unit )
+                                _this.element( parent ).set.boxShadow( this.elements.dropdowns[ parent ].parent.shadow )
+                                _this.element( parent ).set.roundness( this.elements.dropdowns[ parent ].parent.roundness )
+                                _this.element( `${ parent }-label` ).set.text( target.getAttribute( 'label' ) )
+                                _this.element( `${ parent }-label` ).set.attr( 'val', target.getAttribute( 'val' ) )
+                                _this.element( `${ parent }-arrow` ).set.transform( `rotate( ${ this.elements.dropdowns[ parent ].arrow.r.f }deg )` )
+                                _this.element( `${ parent }-content` ).set.height( 0, this.elements.dropdowns[ parent ].parent.unit )
                             }
                         } )
                 },
-                cl: cl => {
-                    try {
-                        thisEl.classList.add( cl )
-                    } catch {
-                        this.log( `Problem removing class to element (${ element })` ).error()
-                    }
-                }
+                cl: cl => _element.classList.add( cl )
             }
 
             const check = {
-                all: ( value, func, waitTime ) => thisEl.querySelectorAll( value ).forEach( () => _this.wait( func, waitTime ) ),
-                attr: attrib => { return thisEl.hasAttribute( attrib ) },
+                all: ( value, func, waitTime ) => _element.querySelectorAll( value ).forEach( () => _this.wait( func, waitTime ) ),
+                attr: attrib => { return _element.hasAttribute( attrib ) },
                 exists: () => { return document.getElementById( element ) },
                 isShowing: () => {
-                    if ( thisEl.style.display == 'inline-block' ) return true
-                    else if ( thisEl.style.display == 'none' ) return false
+                    if ( _element.style.display == 'inline-block' ) return true
+                    else if ( _element.style.display == 'none' ) return false
                 },
                 cl: {
-                    includes: cl => { return thisEl.classList.contains( cl ) },
+                    includes: cl => { return _element.classList.contains( cl ) },
                 },
             }
 
             const once = {
                 showing: ( func, interval ) => {
-                    const interv = interval ? interval : 0.5
+                    const _interval = interval ? interval : 0.5
     
                     this.wait( () => {
                         if ( this.element( element ).check.isShowing() ) {
                             this.log( `${ element } is now showing` ).reg()
                         
                             this.wait( func, 0 )
-                        } else this.element( element ).once.showing( func, interv )
-                    }, interv )
+                        } else this.element( element ).once.showing( func, _interval )
+                    }, _interval )
                 },
                 exists: ( func, interval ) => {
-                    const interv = interval ? interval : 0.5
+                    const _interval = interval ? interval : 0.5
     
                     this.wait( () => {
                         if ( this.element( element ).check.exists() ) {
                             this.log( `${ element } is now showing` ).reg()
                         
                             this.wait( func, 0 )
-                        } else this.element( element ).once.exists( func, interv )
-                    }, interv )
+                        } else this.element( element ).once.exists( func, _interval )
+                    }, _interval )
                 },
             }
 
-            const make = content => {
-                const style = () => {
-                    try {
-                        thisEl.setAttribute( 'style', content )
-                    } catch {
-                        this.log( `Problem making style of element (${ element })` ).error()
+            const set = {
+                id: id => _element.id = id,
+                cl: cl => _element.className = cl,
+                style: content => _element.setAttribute( 'style', content ),
+                width: ( width, unit ) => _element.style.width = width + unit,
+                height: ( height, unit ) => _element.style.height = height + unit,
+                marginLeft: ( margin, unit ) => _element.style.marginLeft = margin + unit,
+                marginRight: ( margin, unit ) => _element.style.marginRight = margin + unit,
+                marginTop: ( margin, unit ) => _element.style.marginTop = margin + unit,
+                marginBottom: ( margin, unit ) => _element.style.marginBottom = margin + unit,
+                transform: transform => _element.style.transform = transform,
+                filter: filter => _element.style.filter = filter,
+                transition: transition => _element.style.transition = transition,
+                pointerEvents: event => _element.style.pointerEvents = event,
+                roundness: roundness => _element.style.borderRadius = roundness,
+                borderRadius: roundness => _element.style.borderRadius = roundness,
+                text: string => _element.innerHTML = string,
+                innerHTML: string => _element.innerHTML = string,
+                value: value => _element.value = value,
+                zIndex: value => _element.style.zIndex = `${ value }`,
+                backgroundImage: link => _element.style.backgroundImage = `url(${ link })`,
+                textColor: color => _element.style.color = color,
+                backgroundSize: size => _element.style.backgroundSize = size,
+                backgroundColor: color => _element.style.backgroundColor = color,
+                background: background => _element.style.background = background,
+                fill: fill => _element.style.fill = fill,
+                borderColor: color => _element.style.borderColor = color,
+                opacity: opacity => _element.style.opacity = `${ opacity * 100 }%`,
+                animation: animation => _element.style.animation = animation,
+                textShadow: shadow => _element.style.textShadow = shadow,
+                boxShadow: shadows => _element.style.boxShadow = shadows,
+                attr: ( attr, value ) => _element.setAttribute( attr, value ),
+            }
+
+            const get = {
+                attr: attr => _element.getAttribute( attr ),
+                filter: () => { return _element.style.filter },
+                offsetTop: () => { return _element.offsetTop },
+                offsetLeft: () => { return _element.offsetLeft },
+                transform: () => { return _element.style.transform },
+                value: () => { return _element.value },
+                valueLength: () => {  return _element.value.length },
+                text: () => { return _element.innerHTML },
+                innerHTML: () => { return _element.innerHTML },
+            }
+
+            const move = {
+                absolute: ( left, right, top, bottom, unit, transition ) => {
+                    const _transition = { seconds: 0.15, type: 'ease' }
+
+                    if ( transition ) {
+                        _transition.seconds = transition.seconds ? transition.seconds : 0.15
+                        _transition.type = transition.type ? transition.type : 'ease'
                     }
-                }
 
-                return {
-                    style: style,
-                }
-            }
-
-            const dispose = () => {
-                try {
-                    thisEl.remove()
-                } catch {
-                    this.log( `Problem disposing element (${ element })` ).error()
-                }
-            }
-
-            const clear = () => {
-                try {
-                    thisEl.innerHTML = ''
-                } catch {
-                    this.log( `Problem clearing element (${ element })` ).error()
-                }
-            }
-
-            const actions = {
-                hide: time => this.wait( () => { thisEl.style.display = "none" }, time ),
-                show: time => this.wait( () => { thisEl.style.display = "inline-block" }, time ),
-                setWidth: ( size, unit ) => thisEl.style.width = size + unit,
-                setHeight: ( size, unit ) => thisEl.style.height = size + unit,
-                setMarginLeft: ( margin, unit ) => thisEl.style.marginLeft = margin + unit,
-                setMarginRight: ( margin, unit ) => thisEl.style.marginRight = margin + unit,
-                setMarginTop: ( margin, unit ) => thisEl.style.marginTop = margin + unit,
-                setMarginBottom: ( margin, unit ) => thisEl.style.marginBottom = margin + unit,
-                setTransform: transform => thisEl.style.transform = transform,
-                setFilter: filter => thisEl.style.filter = filter,
-                setTransition: transition => thisEl.style.transition = transition,
-                setPointerEvents: event => thisEl.style.pointerEvents = event,
-                setRoundness: roundness => thisEl.style.borderRadius = roundness,
-                setText: string => thisEl.innerHTML = string,
-                setValue: value => thisEl.value = value,
-                setZIndex: value => thisEl.style.zIndex = `${ value }`,
-                setImage: link => thisEl.style.backgroundImage = 'url(' + link + ')',
-                setMatrix: ( scale, left, top ) => thisEl.style.transform = 'matrix(' + scale + ', 0, 0, ' + scale + ', ' + left + ', ' + top + ');',
-                setTextColor: color => thisEl.style.color = color,
-                setBackgroundSize: size => thisEl.style.backgroundSize = size,
-                setBackgroundColor: color => thisEl.style.backgroundColor = color,
-                setBackground: background => thisEl.style.background = background,
-                setFill: fill => thisEl.style.fill = fill,
-                setBorderColor: color => thisEl.style.borderColor = color,
-                setOpacity: opacity => thisEl.style.opacity = (opacity * 100) + '%',
-                clearImage: () => thisEl.style.backgroundImage = 'none',
-                addListItem: information => thisEl.innerHTML += `<li>${information}</li>`,
-                addListContainer: ( id, type ) => thisEl.innerHTML += `<${type} id='${id}'></${type}>`,
-                setAnimation: animation => thisEl.style.animation = animation,
-                setTextShadow: shadow => thisEl.style.textShadow = shadow,
-                setShadows: shadows => thisEl.style.boxShadow = shadows,
-                setAttr: ( attr, value ) => thisEl.setAttribute( attr, value ),
-                getAttr: attr => thisEl.getAttribute( attr ),
-                getFilter: attr => { return thisEl.style.filter },
-                getTransform: () => { return thisEl.style.transform },
-                getValue: () => { return thisEl.value },
-                getValueLength: () => {  return thisEl.value.length },
-                getText: () => { return thisEl.innerHTML },
-                setStroke: ( color, width, unit ) => {
-                    thisEl.style.stroke = color
-                    thisEl.style.strokeWidth = width + unit
+                    this.element( element ).set.marginLeft( left + unit )
+                    this.element( element ).set.marginRight( right + unit )
+                    this.element( element ).set.marginTop( top + unit )
+                    this.element( element ).set.marginBottom( bottom + unit )
+                    this.element( element ).set.transition( `${ _transition.seconds }s ${ _transition.type }` )
                 },
-                moveAbs: ( left, right, top, bottom, unit, transition ) => {
-                    thisEl.style.marginLeft = left + unit
-                    thisEl.style.marginRight = right + unit
-                    thisEl.style.marginTop = top + unit
-                    thisEl.style.marginBottom = bottom + unit
-                    thisEl.style.transition = `${ transition }s ease-in-out`
-                },
-                enableDrag: () => {
-                    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                    if (document.getElementById(`${ element }-header`)) {
-                        // if present, the header is where you move the DIV from:
-                        document.getElementById(`${ element }-header`).onmousedown = () => {
-                            dragMouseDown()
-                        }
+            }
+
+            const dispose = () => _element.remove()
+            const clear = () => _element.innerHTML = ''
+
+            const hide = time => {
+                const _time = time ? time : 0
+
+                this.wait( () => _element.style.display = 'none', _time )
+            }
+
+            const show = ( type, time ) => {
+                const _type = type ? type : 'inline-block'
+                const _time = time ? time : 0
+
+                this.wait( () => {
+                    if ( _type != 'inline-block' || _type != 'i-b' ) {
+                        if ( ( _type != 'none' || _type != 'n' ) ) {
+                            _element.style.display = _type
+                        } else _element.style.display = 'none'
+                    } else _element.style.display = 'inline-block'
+                }, _time )
+            }
+
+            const drag = enabled => {
+                const _enabled = enabled ? enabled : false
+
+                if ( typeof _enabled == 'boolean' ) {
+                    const position = {
+                        new: { x: 0, y: 0 },
+                        old: { x: 0, y: 0 },
+                    }
+    
+                    const events = {
+                        drag: {
+                            stop: () => {
+                                /* stop moving when mouse button is released */
+                                document.onmouseup = null
+                                document.onmousemove = null
+                            },
+                            track: e => {
+                                e = e || window.event
+                                e.preventDefault()
+    
+                                /* calculate the new cursor position */
+                                position.new.x = position.old.x - e.clientX
+                                position.new.y = position.old.y - e.clientY
+                                position.old.x = e.clientX
+                                position.old.y = e.clientY
+    
+                                /* set new position of element */ 
+                                this.element( element ).set.marginTop( this.element( element ).get.offsetTop() - position.new.y, this.units.px )
+                                this.element( element ).set.marginLeft( this.element( element ).get.offsetLeft() - position.new.x, this.units.px )
+                            },
+                        },
+                        mousedown: e => {
+                            e = e || window.event
+                            e.preventDefault()
+    
+                            /* calculate the new cursor position at start-up */
+                            position.old.x = e.clientX
+                            position.old.y = e.clientY
+    
+                            document.onmouseup = () => events.drag.stop() // stop dragging when mouse is not being held anymore
+                            document.onmousemove = () => events.drag.track() // call when cursor moves
+                        },
+                    }
+
+                    if ( _enabled ) {
+                        if ( this.element( `${ element }-header` ).check.exists() ) this.element( `${ element }-header` ).add.listener( 'mousedown', e => events.mousedown( e ) )
+                        else this.element( element ).add.listener( 'mousedown', e => events.mousedown( e ) )
                     } else {
-                        // otherwise, move the DIV from anywhere inside the DIV:
-                        thisEl.onmousedown = () => {
-                                dragMouseDown()
-                        }
+                        if ( this.element( `${ element }-header` ).check.exists() ) this.element( `${ element }-header` ).remove.listener( 'mousedown', e => events.mousedown( e ) )
+                        else this.element( element ).remove.listener( 'mousedown', e => events.mousedown( e ) )
                     }
-
-                    const dragMouseDown = (e) => {
-                        e = e || window.event;
-                        e.preventDefault();
-                        // get the mouse cursor position at startup:
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
-                        document.onmouseup = () => {
-                            closeDragElement()
-                            // document.body.style.cursor = controller.cursors.normal
-                        };
-                        // call a function whenever the cursor moves:
-                        document.onmousemove = () => {
-                            elementDrag()
-                        };
-                    }
-
-                    const elementDrag = (e) => {
-                        e = e || window.event;
-                        e.preventDefault();
-                        // calculate the new cursor position:
-                        pos1 = pos3 - e.clientX;
-                        pos2 = pos4 - e.clientY;
-                        pos3 = e.clientX;
-                        pos4 = e.clientY;
-                        // set the element's new position:
-                        thisEl.style.marginTop = `${thisEl.offsetTop - pos2}px`;
-                        thisEl.style.marginLeft = `${thisEl.offsetLeft - pos1}px`;
-                    }
-
-                    const closeDragElement = () => {
-                        // stop moving when mouse button is released:
-                        document.onmouseup = null;
-                        document.onmousemove = null;
-                    }
-                },
-                updateLoader: (string) => {
-                    setInterval(() => {
-                        thisEl.innerHTML = string + '.'
-                        setTimeout(() => {
-                            thisEl.innerHTML = string + '..'
-                            setTimeout(() => {
-                                thisEl.innerHTML = string + '...'
-                            }, 300)
-                        }, 300)
-                    }, 900)
-                },
+                } else this.log( 'The argument passed for dragging is not a boolean' ).error()
             }
             
             return {
                 render: render,
                 dispose: dispose,
-                make: make,
                 clear: clear,
+                hide: hide,
+                show: show,
+                drag: drag,
+                set: set,
+                get: get,
                 add: add,
                 remove: remove,
                 retrieve: retrieve,
-                actions: actions,
                 once: once,
                 check: check,
+                move: move,
             }
         }
 
@@ -830,6 +821,27 @@
         if ( this.three ) {
             this.log( 'three.js found' ).reg()
 
+            const stored = { meshes: {} }
+
+            if ( loadStored3DData ) {
+                this.log( '←------ Loading 3D Data ------→' ).reg()
+
+                if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                    const localMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                    const localPositions = this.operations.parse( localStorage.getItem( 'gearz.meshes.positions' ) )
+
+                    for ( const m in localMeshes ) {
+                        localMeshes[ m ] = new THREE.ObjectLoader().parse( localMeshes[ m ] )
+
+                        if ( m in localPositions ) localMeshes[ m ].position.set( localPositions[ m ].x, localPositions[ m ].y, localPositions[ m ].z )
+                    }
+
+                    stored.meshes = localMeshes
+
+                    this.log( `${ Object.keys( localMeshes ).length } loaded from local storage` ).reg()
+                } else this.log( 'No meshes have been stored locally' ).reg()
+            }
+
             this.threeJS = {
                 vec2: () => { return new this.three.Vector2() },
                 scene: () => { return new this.three.Scene() },
@@ -857,26 +869,261 @@
                     map: ( camera, rendererElement ) => {
                         if ( this.three.MapControls != undefined ) return new this.three.MapControls( camera, rendererElement )
                     }
-                },
-                mesh: mesh => {
-                    const dispose = {
-                        geometry: () => mesh.geometry.dispose(),
-                        material: () => mesh.material.dispose(),
-                        all: () => {
-                            dispose.geometry()
-                            dispose.material()
-                        } 
-                    }
+                }, 
+                mesh: {
+                    stored: stored.meshes,
+                    helpers: {
+                        grids: new Array(),
+                    },
+                    default: {
+                        geometry: new this.three.BoxGeometry( 1, 1, 1 ),
+                        material: new this.three.MeshPhongMaterial( { color: 0xff00ff, flatShading: true } ),
+                    },
+                    set: ( mesh, isArray ) => {
+                        return {
+                            shadows: ( cast, receive ) => {
+                                if ( isArray ) {
+                                    mesh.forEach( m => {
+                                        m.castShadow = cast ? cast : false
+                                        m.receiveShadow = receive ? receive : false
+                                    } )
+                                } else {
+                                    mesh.castShadow = cast ? cast : false
+                                    mesh.receiveShadow = receive ? receive : false
+                                }
+                            },
+                        }
+                    },
+                    create: {
+                        helper: ( object, isArray ) => {
+                            return {
+                                grid: ( size, divisions, centerColor, gridColor ) => {
+                                    const _size = size ? size : 10
+                                    const _divisions = divisions ? divisions : 10
+                                    const _centerColor = centerColor ? centerColor : 0x444444
+                                    const _gridColor = gridColor ? gridColor : 0x888888
 
-                    const show = () => mesh.visible = true
-                    const hide = () => mesh.visible = false
-                    const isShowing = () => { return mesh.visible }
+                                    if ( isArray ) {
+                                        object.forEach( o => {
+                                            const helper = new THREE.GridHelper( _size, _divisions, _centerColor, _gridColor )
+                                            helper.rotation.x = this.operations.convert( 'deg', -90 ).to.rad()
 
-                    return {
-                        dispose: dispose,
-                        show: show,
-                        hide: hide,
-                        isShowing: isShowing,
+                                            o.add( helper )
+
+                                            this.threeJS.mesh.helpers.grids.push( helper )
+                                        } )
+                                    } else {
+                                        const helper = new THREE.GridHelper( _size, _divisions, _centerColor, _gridColor )
+                                        helper.rotation.x = this.operations.convert( 'deg', -90 ).to.rad()
+
+                                        object.add( helper )
+
+                                        this.threeJS.mesh.helpers.grids.push( helper )
+                                    }
+                                },
+                            }
+                        },
+                        regular: ( options ) => {
+                            const presets = {
+                                name: `mesh.${ this.operations.create.id( 11 ) }`,
+                                geometry: this.threeJS.mesh.default.geometry,
+                                material: this.threeJS.mesh.default.material,
+                            }
+
+                            if ( options ) {
+                                presets.name = options.name ? options.name : `mesh.${ this.operations.create.id( 11 ) }`
+                                presets.geometry = options.geometry ? options.geometry : this.threeJS.mesh.default.geometry
+                                presets.material = options.material ? options.material : this.threeJS.mesh.default.material
+                            }
+
+                            const mesh = new this.three.Mesh( presets.geometry, presets.material )
+                            mesh.name = presets.name
+                            
+                            return mesh
+                        },
+                        instanced: ( options ) => {
+                            const presets = {
+                                name: `mesh.${ this.operations.create.id( 11 ) }`,
+                                geometry: this.threeJS.mesh.default.geometry,
+                                material: this.threeJS.mesh.default.material,
+                                count: 1,
+                            }
+
+                            if ( options ) {
+                                presets.name = options.name ? options.name : `mesh.${ this.operations.create.id( 11 ) }`
+                                presets.geometry = options.geometry ? options.geometry : this.threeJS.mesh.default.geometry
+                                presets.material = options.material ? options.material : this.threeJS.mesh.default.material
+                                presets.count = options.count ? options.count : 1
+                            }
+
+                            const mesh = new this.three.InstancedMesh( presets.geometry, presets.material, presets.count )
+                            mesh.name = presets.name
+                            
+                            return mesh
+                        },
+                    },
+                    addStoredToLocal: ( clear, keepPositions ) => {
+                        if ( clear ) {
+                            const localMeshes = {}, localPositions = {}
+
+                            localStorage.setItem( 'gearz.meshes', this.operations.stringify( localMeshes ) )
+                            localStorage.setItem( 'gearz.meshes.positions', this.operations.stringify( localPositions ) )
+                        }
+                        
+                        let newLocalMeshes = {}, newLocalPositions = {}
+
+                        if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                            newLocalMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                            newLocalPositions = this.operations.parse( localStorage.getItem( 'gearz.meshes.positions' ) )
+
+                            for ( const m in newLocalMeshes ) newLocalMeshes[ m ] = new THREE.ObjectLoader().parse( newLocalMeshes[ m ] )
+                        }
+                        
+                        for ( const m in this.threeJS.mesh.stored ) {
+                            newLocalMeshes[ m ] = this.threeJS.mesh.stored[ m ]
+
+                            if ( keepPositions ) {
+                                newLocalPositions[ m ] = {
+                                    x: newLocalMeshes[ m ].position.x,
+                                    y: newLocalMeshes[ m ].position.y,
+                                    z: newLocalMeshes[ m ].position.z,
+                                }
+                            }
+                        }
+
+                        localStorage.setItem( 'gearz.meshes', this.operations.stringify( newLocalMeshes ) )
+                        localStorage.setItem( 'gearz.meshes.positions', this.operations.stringify( newLocalPositions ) )
+                    },
+                    add: ( mesh, isArray ) => {
+                        const store = whereToStore => {
+                            if ( isArray ) mesh.forEach( m => this.threeJS.mesh.store( m, whereToStore ) )
+                            else this.threeJS.mesh.store( mesh, whereToStore )
+
+                            return {
+                                to: to,
+                            }
+                        }
+
+                        const to = ( object, isName ) => {
+                            if ( !isName ) {
+                                if ( isArray ) mesh.forEach( m => object.add( m ) )
+                                else object.add( mesh )
+                            } else this.threeJS.mesh.stored[ object ].add( mesh )
+
+                            return {
+                                store: store,
+                            }
+                        }
+                        
+                        return {
+                            then: this.then,
+                            store: store,
+                            to: to,
+                        }
+                    },
+                    exists: ( mesh, where, isName ) => {
+                        if ( where == 'local' ) {
+                            if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                                const localMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                                
+                                if ( isName ) {
+                                    if ( localMeshes[ mesh ] != null ) return true
+                                    else return false
+                                } else {
+                                    let name = ''
+
+                                    for ( const m in localMeshes ) {
+                                        const parsedMesh = new THREE.ObjectLoader().parse( localMeshes[ m ] )
+
+                                        if ( parsedMesh.uuid == mesh.uuid ) {
+                                            name = m
+
+                                            break
+                                        }
+                                    }
+
+                                    if ( localMeshes[ name ] != null ) return true
+                                    else return false
+                                }
+                            } else this.log( 'No meshes are stored locally' ).reg()
+                        }
+                    },
+                    find: ( mesh, where, isName ) => {
+                        if ( where == 'local' ) {
+                            if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                                const localMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                                
+                                if ( isName ) {
+                                    if ( localMeshes[ mesh ] != null ) return new THREE.ObjectLoader().parse( localMeshes[ mesh ] )
+                                    else this.log( 'Could not find mesh with this name locally' ).reg()
+                                } else {
+                                    let name = ''
+
+                                    for ( const m in localMeshes ) {
+                                        const parsedMesh = new THREE.ObjectLoader().parse( localMeshes[ m ] )
+
+                                        if ( parsedMesh.uuid == mesh.uuid ) {
+                                            name = m
+
+                                            break
+                                        }
+                                    }
+
+                                    if ( localMeshes[ name ] != null ) return name
+                                    else this.log( 'Could not find mesh with these properties locally' ).reg()
+                                }
+                            } else this.log( 'No meshes are stored locally' ).reg()
+                        }
+                    },
+                    store: ( mesh, whereToStore, options ) => {
+                        let storage
+
+                        const presets = {
+                            storage: whereToStore ? whereToStore : 'engine',
+                            name: mesh.name.length > 0 ? mesh.name : `mesh.${ this.operations.create.id( 11 ) }`
+                        }
+                  
+                        if ( options ) {
+                            const name = presets.name
+
+                            presets.name = options.name ? options.name : name
+                        }
+
+                        if ( presets.storage == 'engine' ) {
+                            // mesh.storage = [ 'engine' ]
+
+                            this.threeJS.mesh.stored[ presets.name ] = mesh
+                        } else if ( presets.storage == 'local' ) {
+                            // mesh.storage = [ 'local' ]
+
+                            if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                                const localMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                                localMeshes[ presets.name ] = mesh
+
+                                localStorage.setItem( 'gearz.meshes', this.operations.stringify( localMeshes ) )
+                            } else {
+                                const newLocalMeshes = {}
+                                newLocalMeshes[ presets.name ]
+
+                                localStorage.setItem( 'gearz.meshes', this.operations.stringify( newLocalMeshes ) )
+                            }
+                        } else if ( presets.storage == 'engine local' || presets.storage == 'local engine' ) {
+                            // mesh.storage = [ 'engine', 'local' ]
+
+                            this.threeJS.mesh.stored[ presets.name ] = mesh
+
+                            if ( localStorage.getItem( 'gearz.meshes' ) != null ) {
+                                const localMeshes = this.operations.parse( localStorage.getItem( 'gearz.meshes' ) )
+                                localMeshes[ presets.name ] = mesh
+
+                                localStorage.setItem( 'gearz.meshes', this.operations.stringify( localMeshes ) )
+                            } else {
+                                const newLocalMeshes = {}
+                                newLocalMeshes[ presets.name ]
+
+                                localStorage.setItem( 'gearz.meshes', this.operations.stringify( newLocalMeshes ) )
+                            }
+                        }
                     }
                 },
                 materials: {
