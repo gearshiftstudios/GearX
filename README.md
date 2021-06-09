@@ -28,11 +28,16 @@ const gearz = new GearZ( true, { three: THREE }, false )
 * If second parameter is not empty, the engine will expect you to insert the **variable representatives** of the external libraries you wish the engine to manage. As long as it is in the list of external libraries the engine supports, then there will be no errors (see **info** as the top of the document). As of right now, the engine can manage [three.js](https://github.com/mrdoob/three.js/) and has some custom **methods & properties** that make using [three.js](https://github.com/mrdoob/three.js/) somewhat easier. Keep in mind the main focus of engine is handling [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
 * If the third parameter is set to ``true``, then the meshes the engine was told to put into ``localStorage`` will be loaded into the engine's ***temporary mesh storage object*** for your program to access.
 
+## Cool Examples
+Below are some examples showing off the engine's capabilities.
+* [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html)
+* [Loading Stored Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
+
 ## Newest Features
 Below are some of the newest features added to the engine.
 
 ### Creating a full [three.js](https://github.com/mrdoob/three.js/) scene in two lines
-It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a camera, renderer, ``HemisphereLight`` and ``DirectionalLight`` (although only the ``HemisphereLight`` is initially added to the scene), and ``OrbitControls``). You need to include the ``OrbitControls`` script in your program if you want yo use it. You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
+It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a ``PerspectiveCamera``, ``WebGLRenderer`` (initialized with ``antialias`` and ``alpha`` options set to ``true``), ``GridHelper``, ``HemisphereLight`` and ``DirectionalLight`` (although only the ``HemisphereLight`` is initially added to the scene), and ``OrbitControls``). You need to include the ``OrbitControls`` script in your program if you want yo use it. You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
 ```javascript
 /* create a simple three.js scene */
 const world = gearz.threeJS.create.world() // store the data in a variable
