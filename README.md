@@ -47,9 +47,9 @@ const world = gearz.threeJS.create.world()
 world.init( true )
 
 const animate = () => {
-	  requestAnimationFrame( animate )
+    requestAnimationFrame( animate )
 
-		world.render()
+    world.render()
 }
 
 animate()
