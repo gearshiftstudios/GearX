@@ -43,7 +43,7 @@ It can't get much more simpler than this. With just two lines, you can create a 
 const world = gearz.threeJS.create.world() // store the data in a variable
 world.init( true ) // initialize it with OrbitControls
 ```
-Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation*** cycle (including ``OrbitControls``).
+Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation cycle*** (including ``OrbitControls``).
 ```javascript
 /* create a simple three.js scene with animation cycle */
 const gearz = new GearZ( true, { three: THREE }, false ) // store and intialize engine data
