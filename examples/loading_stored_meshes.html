@@ -39,6 +39,9 @@
             const world = gearz.threeJS.create.world() 
             world.init()
 
+            world.camera.position.set( 0, 0, 10 )
+
+            /* handle lights */ 
             world.scene.remove( world.scene.lights.hemisphere )
 
             world.scene.lights.directional.main.position.set( 8, 8, 8 )
