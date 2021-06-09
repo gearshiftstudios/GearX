@@ -32,7 +32,7 @@ const gearz = new GearZ( true, { three: THREE }, false )
 Below are some of the newest features added to the engine.
 
 ### Creating a full [three.js](https://github.com/mrdoob/three.js/) scene in two lines
-It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a camera, renderer, ``GridHelper``, ``HemisphereLight`` and ``DirectionalLight`` (although only the ``HemisphereLight`` is initially added to the scene), and ``OrbitControls``). You need to include the ``OrbitControls`` script in your program if you want yo use it. You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
+It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a ``PerspectiveCamera``, ``WebGLRenderer`` (initialized with ``antialias`` and ``alpha`` options set to ``true``), ``GridHelper``, ``HemisphereLight`` and ``DirectionalLight`` (although only the ``HemisphereLight`` is initially added to the scene), and ``OrbitControls``). You need to include the ``OrbitControls`` script in your program if you want yo use it. You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
 ```javascript
 /* create a simple three.js scene */
 const world = gearz.threeJS.create.world() // store the data in a variable
