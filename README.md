@@ -12,15 +12,15 @@ Other external libraries in which this program can utilize:
 Again, thank you for choosing to use my **"Engine"**
 
 ## Installation
-* If you intend to use any external libraries that GearZ utilizes, they must be imported before GearZ. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
+If you intend to use any external libraries that GearZ utilizes, they must be imported before GearZ. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
 ```html
 <script src="three.js"></script>
 <script src="gearx-cs.js"></script>
 ```
-* As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
+As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
 
 ## Usage (Updated)
-* The engine is ``function`` based ``class``, so you can call it by doing declaring a constant to represent it. Seen below.
+The engine is ``function`` based ``class``, so you can call it by doing declaring a constant to represent it. Seen below.
 ```javascript
 const gearz = new GearZ( true, { three: THREE }, false )
 ```
