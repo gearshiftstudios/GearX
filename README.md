@@ -19,10 +19,18 @@ Again, thank you for choosing to use my **"Engine"**
 ```
 * As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
 
-## Usage
+## Usage (Updated)
+* The engine is ``function`` based ``class``, so you can call it by doing declaring a constant to represent it. Seen below.
+```javascript
+const gearz = new GearZ( true, { three: THREE }, false )
+```
+* If the first parameter is set to ``true``, then the ***Universal Event Manager*** will start listening for the added and preset mouse-events. This means there will be events running all the time in the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
+* If second parameter is not empty, the engine will expect you to insert the **variable representatives** of the external libraries you wish the engine to manage. As long as it is in the list of external libraries the engine supports, then there will be no errors (see **info** as the top of the document). As of right now, the engine can manage [three.js](https://github.com/mrdoob/three.js/) and has some custom **methods & properties** that make using [three.js](https://github.com/mrdoob/three.js/) somewhat easier. Keep in mind the main focus of engine is handling [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction).
+
+## Usage (Outdated)
 * There is already a variable called ``Engine`` embedded in the script. In turn, any other declaration of a variable with this exact name and capitalization might cause errors. This is meant for you to use from the start without having to declared a new variable for the engine. Inside the unminified file it looks like this:
 ```javascript
-let Engine = new GearZ( true, {} )
+const Engine = new GearZ( true, {} )
 ```
 * The embedded ``Engine`` variable looks for ``THREE`` as its representative for [three.js](https://github.com/mrdoob/three.js/). If ``THREE`` does not exist, it will automatically cancel out all actions in that instance of the engine that utilize [three.js](https://github.com/mrdoob/three.js/).
 * Basically the same as most other libraries. If you are using [three.js](https://github.com/mrdoob/three.js/) for example, you would use it like this:
