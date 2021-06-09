@@ -33,7 +33,7 @@ Below are some examples showing off the engine's capabilities.
 * [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html) (WIP for **Civilia** development)
 * [Loading and Storing Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
-## Newest Features
+## Newest & Useful Features
 Below are some of the newest features added to the engine.
 
 ### Creating a full [three.js](https://github.com/mrdoob/three.js/) scene in two lines
