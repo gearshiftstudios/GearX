@@ -43,13 +43,14 @@ Of course, you have to allow it to render every frame to get a smooth image. Bel
 /* create a simple three.js scene with animation cycle */
 const gearz = new GearZ( true, { three: THREE }, true )
 
-const world = gearz.threeJS.create.world() 
-world.init( true )
+const world = gearz.threeJS.create.world() // store the scene data in a variable 
+world.init( true ) // initialize scene with OrbitControls
 
+/* animation cycle */
 const animate = () => {
     requestAnimationFrame( animate )
 
-    world.render()
+    world.render() // needed to render scene (controls automatically update)
 }
 
 animate()
