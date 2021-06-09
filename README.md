@@ -55,6 +55,7 @@ const animate = () => {
 
 animate()
 ```
+To see a live example of this in action, [check this out](https://gearshiftstudios.github.io/GearZ/examples/simple_three_scene.html).
 
 ### Dynamic Dropdown Menu Creation
 You can make dropdown menus with custom UI based upon the properties you attribute to it. It's possible to create a really simple one with just this short amount of code:
