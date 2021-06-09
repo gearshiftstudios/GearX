@@ -30,7 +30,7 @@ const gearz = new GearZ( true, { three: THREE }, false )
 
 ## Cool Examples
 Below are some examples showing off the engine's capabilities.
-* [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html)
+* [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html) (WIP for **Civilia** development)
 * [Loading Stored Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
 ## Newest Features
