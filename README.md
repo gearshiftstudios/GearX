@@ -32,11 +32,27 @@ const gearz = new GearZ( true, { three: THREE }, false )
 Below are some of the newest features added to the engine.
 
 ### Creating a full [three.js](https://github.com/mrdoob/three.js/) scene in two lines
-It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a camera, renderer, and OrbitControls). You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
+It can't get much more simpler than this. With just two lines, you can create a full [three.js](https://github.com/mrdoob/three.js/) scene (that includes a camera, renderer, and OrbitControls). You need to include the ``OrbitControls`` script in your program if you want yo use it. You can change all these things afterwords of course. Soon you will be able to create a more precise scene using this method.
 ```javascript
 /* create a simple three.js scene */
 const world = gearz.threeJS.create.world() // store the data in a variable
 world.init( true ) // initialize it with OrbitControls
+```
+Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation*** cycle (including OrbitControls).
+```javascript
+/* create a simple three.js scene with animation cycle */
+const gearz = new GearZ( true, { three: THREE }, true )
+
+const world = gearz.threeJS.create.world() 
+world.init( true )
+
+const animate = () => {
+	  requestAnimationFrame( animate )
+
+		world.render()
+}
+
+animate()
 ```
 
 ### Dynamic Dropdown Menu Creation
