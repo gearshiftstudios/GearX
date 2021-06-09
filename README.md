@@ -65,6 +65,6 @@ To see a live example of this in action, [check this out](https://gearshiftstudi
 ### Dynamic Dropdown Menu Creation
 You can make dropdown menus with custom UI based upon the properties you attribute to it. It's possible to create a really simple one with just this short amount of code:
 ```javascript
-Engine.element( 'body' ).add.dropdown( 'sports-drop', [ 'Football', 'Baseball', 'Basketball' ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
+gearz.element( 'body' ).add.dropdown( 'sports-drop', [ [ 'Football', 0 ], [ 'Baseball', 1 ], [ 'Basketball', 2 ] ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
 ```
-You can check this out along with 3 other dropdowns in this [example](https://gearshiftstudios.github.io/GearZ/examples/dropdowns.html) here. With just a few more properties and attributes you can make look professional.
+With just a few more properties and attributes you can make your dropdown look professional.
