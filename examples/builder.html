@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Builder - GearZ Example</title>
+        <link rel="shortcut icon" href="#">
+
+        <!-- fonts -->
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=EB+Garamond"/>
+        <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" type="text/css" href="./builder/css/elements.css"/>
+    </head>
+
+    <body id="body">
+        <gui>
+            <interface-rt id='gui-object-transforms'>
+                <!-- position -->
+
+                <label-lt id='object-transforms-position' class='transparent no-box-shadow'>Position</label-lt>
+
+                <label-lt id='object-transforms-position-x-label'>x</label-lt>
+                <label-lt id='object-transforms-position-y-label'>y</label-lt>
+                <label-lt id='object-transforms-position-z-label'>z</label-lt>
+
+                <input id='object-transforms-position-x' class='lt' />
+                <input id='object-transforms-position-y' class='lt' />
+                <input id='object-transforms-position-z' class='lt' />
+
+                <!-- rotation -->
+                
+                <label-lt id='object-transforms-rotation' class='transparent no-box-shadow'>Rotation</label-lt>
+
+                <label-lt id='object-transforms-rotation-x-label'>x</label-lt>
+                <label-lt id='object-transforms-rotation-y-label'>y</label-lt>
+                <label-lt id='object-transforms-rotation-z-label'>z</label-lt>
+
+                <input id='object-transforms-rotation-x' class='lt' />
+                <input id='object-transforms-rotation-y' class='lt' />
+                <input id='object-transforms-rotation-z' class='lt' />
+
+                <!-- scale -->
+                
+                <label-lt id='object-transforms-scale' class='transparent no-box-shadow'>Scale</label-lt>
+
+                <label-lt id='object-transforms-scale-x-label'>x</label-lt>
+                <label-lt id='object-transforms-scale-y-label'>y</label-lt>
+                <label-lt id='object-transforms-scale-z-label'>z</label-lt>
+
+                <input id='object-transforms-scale-x' class='lt' />
+                <input id='object-transforms-scale-y' class='lt' />
+                <input id='object-transforms-scale-z' class='lt' />
+            </interface-rt>
+        </gui>
+
+        <!-- GearZ -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="./three/controls/orbit.js"></script>
+        <script src="./three/controls/transform.js"></script>
+        <script src="../dist/gearz-cs.js"></script>
+
+        <script>
+            const gearz = new GearZ( true, { three: THREE }, true ), g3d = gearz.threeJS, threeLib = gearz.three
+            gearz.cursor.set()
+
+            const world = gearz.threeJS.create.world() 
+            world.init( true )
+
+            const builder = {
+                element: gearz.element( 'world' ),
+                mouse: {
+                    ray: new threeLib.Raycaster(),
+                    data: new threeLib.Vector2(),
+                },
+                controls: {
+                    transform: new THREE.TransformControls( world.camera, world.renderer.domElement ),
+                },
+                objects: new Array(),
+            }
+            
+            builder.objects.push( g3d.mesh.create.regular( {
+                name: `mesh.${ gearz.operations.create.id() }`,
+                geometry: new threeLib.BoxGeometry( 2, 2, 2 ),
+                material: new threeLib.MeshPhongMaterial( { color: 'grey', flatShading: true } )
+            } ) )
+
+            g3d.mesh.add( builder.objects, true ).to( world.scene, false )
+
+			const animate = function () {
+				requestAnimationFrame( animate )
+
+				world.render()
+			}
+
+			animate()
+        </script>
+        
+        <script src="./builder/js/gui.js"></script>
+    </body>
+</html>

@@ -1,3 +1,4 @@
+
     /*
     * GearZ ( Client Side ) - r1.14
     *
@@ -218,11 +219,13 @@
         this.operations = {
             create: {
                 id: length => {
+                    const _length = length ? length : 11
+
                     let result = ''
 
                     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
-                    for ( let i = 0; i < length; i++ ) result += characters.charAt( Math.floor( Math.random() * characters.length) )
+                    for ( let i = 0; i < _length; i++ ) result += characters.charAt( Math.floor( Math.random() * characters.length) )
 
                     return result
                 },
@@ -295,6 +298,78 @@
         /* one-line methods */
         this.wait = ( wait, time ) => setTimeout( wait, time * 1000 )
         this.repeat = ( repeat, time ) => setInterval( repeat, time * 1000 )
+
+        /* manage cursors */
+        this.cursor = {
+            directory: [ 'images/cursors/', false ], // directory, isGithubImage
+            types: {
+                /* name: image, useDirectory */ 
+                'normal': [ 'normal.png', true ],
+                'sketch collar': [ 'sketch_collar.png', true ]
+            },
+            set: ( name, xOffset, yOffset, element, isId ) => {
+                const _name = name ? name : 'normal'
+                const _xOffset = xOffset ? xOffset : 0      
+                const _yOffset = yOffset ? yOffset : 0
+                const _isId = isId ? isId : false
+
+                let _element = element ? element : 'body', url
+
+                if ( _element == 'body' ) _element = document.body
+                else {
+                    if ( _isId ) _element = document.getElementById( _element )
+                }
+
+                if ( _name in this.cursor.types ) {
+                    if ( this.cursor.types[ _name ][ 1 ] ) {
+                        if ( this.cursor.directory[ 1 ] ) url = `${ this.cursor.directory[ 0 ] + this.cursor.types[ _name ][ 0 ] }?raw=true`
+                        else url = this.cursor.directory[ 0 ] + this.cursor.types[ _name ][ 0 ]
+                    } else url = this.cursor.types[ _name ][ 0 ]
+                } else this.log( `Couldn't find a cursor stored in the engine with the name "${ _name }"` ).error()
+
+                _element.style.cursor = `url( ${ url } ) ${ _xOffset } ${ _yOffset }, auto`
+            },
+            add: ( name, image, useDirectory ) => {
+                const _name = name ? name : `cursor.${ this.operations.create.id() }`
+                const _image = image ? image : 'normal.png'
+
+                let _useDirectory = useDirectory ? useDirectory : false
+
+                if ( _name in this.cursor.types == false ) {
+                    if ( typeof _useDirectory != 'boolean' ) {
+                        _useDirectory = false
+
+                        this.log( `Your input for the "useDirectory" argument was not a boolean. As a result it was defaulted to "true".` ).error()
+                    }
+
+                    this.cursor.types[ _name ] = new Array( _image, _useDirectory )
+                } else this.log( `There is already a cursor already stored in the engine with the name "${ _name }". Use the "change" method to change it's properties.` ).error()
+
+                return {
+                    set: ( xOffset, yOffset, element, isId ) => {
+                        const _xOffset = xOffset ? xOffset : 0
+                        const _yOffset = yOffset ? yOffset : 0
+                        const _isId = isId ? isId : false
+        
+                        let _element = element ? element : 'body', url
+        
+                        if ( _element == 'body' ) _element = document.body
+                        else {
+                            if ( _isId ) _element = document.getElementById( _element )
+                        }
+        
+                        if ( _name in this.cursor.types ) {
+                            if ( this.cursor.types[ _name ][ 1 ] ) {
+                                if ( this.cursor.directory[ 1 ] ) url = `${ this.cursor.directory[ 0 ] + this.cursor.types[ _name ][ 0 ] }?raw=true`
+                                else url = this.cursor.directory[ 0 ] + this.cursor.types[ _name ][ 0 ]
+                            } else url = this.cursor.types[ _name ][ 0 ]
+                        } else this.log( `Couldn't find a cursor stored in the engine with the name "${ _name }"` ).error()
+        
+                        _element.style.cursor = `url( ${ url } ) ${ _xOffset } ${ _yOffset }, auto`
+                    }
+                }
+            }
+        } 
 
         /* large methods */
         this.dropdown = element => {
@@ -870,6 +945,63 @@
                         if ( this.three.MapControls != undefined ) return new this.three.MapControls( camera, rendererElement )
                     }
                 }, 
+                create: {
+                    world: () => {
+                        return {
+                            /* properties */ 
+                            scene: new this.three.Scene(),
+                            camera: new this.three.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ),
+                            renderer: new this.three.WebGLRenderer( { antialias: true, alpha: true } ),
+
+                            /* methods */
+                            init: function ( orbitControls ) {
+
+                                /* renderer */
+                                this.renderer.setSize( window.innerWidth, window.innerHeight )
+                                this.renderer.outputEncoding = _this.three.GammaEncoding
+                                this.renderer.gammaFactor = 2
+                                this.renderer.shadowMap.enabled = true
+                                this.renderer.domElement.setAttribute( 'id', 'world' )
+			                    document.body.appendChild( this.renderer.domElement )
+
+                                /* camera */
+                                this.camera.position.set( 10, 10, 10 )
+
+                                /* lights */ 
+                                this.scene.lights = {
+                                    hemisphere: new _this.three.HemisphereLight( 0xffffff, 0x080820, 1 ),
+                                    directional: {
+                                        main: new _this.three.DirectionalLight( 0xffffff, 1 )
+                                    },
+                                }
+
+
+                                this.scene.lights.hemisphere.position.set( 50, 100, 50 )
+
+                                _this.threeJS.mesh.add( this.scene.lights.hemisphere, false ).to( this.scene, false )
+
+                                /* helpers */
+                                this.scene.helpers = {
+                                    grid: _this.threeJS.mesh.create.helper( this.scene, false ).grid( 20, 20, 0x000000 ),
+                                }
+
+                                _this.threeJS.mesh.add( this.scene.helpers.grid, false ).to( this.scene, false )
+
+                                /* add controls */ 
+                                this.scene.controls = {
+                                    orbit: orbitControls == true ? new _this.three.OrbitControls( this.camera, this.renderer.domElement ) : null,
+                                }
+                            },
+                            render: function () {
+                                if ( this.scene.controls ) {
+                                    if ( this.scene.controls.orbit != null ) this.scene.controls.orbit.update()
+                                }
+
+                                this.renderer.render( this.scene, this.camera )
+                            },
+                        }
+                    },
+                },
                 mesh: {
                     stored: stored.meshes,
                     helpers: {
@@ -906,7 +1038,9 @@
                                     if ( isArray ) {
                                         object.forEach( o => {
                                             const helper = new THREE.GridHelper( _size, _divisions, _centerColor, _gridColor )
-                                            helper.rotation.x = this.operations.convert( 'deg', -90 ).to.rad()
+
+                                            if ( o.type == 'Scene' ) helper.position.set( 0, 0, 0 )
+                                            else if ( o.type == 'Mesh' ) helper.position = o.position
 
                                             o.add( helper )
 
@@ -914,11 +1048,11 @@
                                         } )
                                     } else {
                                         const helper = new THREE.GridHelper( _size, _divisions, _centerColor, _gridColor )
-                                        helper.rotation.x = this.operations.convert( 'deg', -90 ).to.rad()
 
-                                        object.add( helper )
+                                        if ( object.type == 'Scene' ) helper.position.set( 0, 0, 0 )
+                                        else if ( object.type == 'Mesh' ) helper.position = object.position
 
-                                        this.threeJS.mesh.helpers.grids.push( helper )
+                                        return helper
                                     }
                                 },
                             }

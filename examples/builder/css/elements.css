@@ -1,0 +1,214 @@
+html, body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    user-select: none;
+    outline: none;
+    box-shadow: inset 0 0 25vh black;
+    overflow: hidden;
+    background-color: #406885;
+    /* background-image: url( https://64.media.tumblr.com/0f0b7d9ff650feec018bd69d9f0045b5/tumblr_pd6iwbkUDj1xwjxfmo1_500.gifv );
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat; */
+}
+
+interface-lt, interface-rt, interface-lb, interface-rb, interface {
+    margin: 0;
+    min-width: 2vh;
+    min-height: 2vh;
+    width: 20vh;
+    height: 10vh;
+    background-color: white;
+    border: none;
+    border-radius: 1vh;
+    box-shadow: 0 0 1vh black, inset 0 0 1vh black;
+}
+interface-lt, interface-rt, interface-lb, interface-rb { position: absolute; }
+interface-lt { left: 0;  top: 0 }
+interface-rt { right: 0; top: 0 }
+interface-lb { left: 0;  bottom: 0 }
+interface-rb { right: 0; bottom: 0 }
+
+label-lt, label-rt, label-lb, label-rb, label {
+    margin: 0;
+    padding-top: 0.5vh; 
+    padding-bottom: 0.5vh;
+    padding-left: 1vh; 
+    padding-right: 1vh;
+    background-color: rgba( 0, 0, 0, 0.5 );
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: 0 0 1vh black, inset 0 0 1vh black;
+    font-family: Trebuchet MS;
+    font-size: 1.5vh;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 1vh black;
+}
+label-lt, label-rt, label-lb, label-rb { position: absolute; }
+label-lt { left: 0;  top: 0 }
+label-rt { right: 0; top: 0 }
+label-lb { left: 0;  bottom: 0 }
+label-rb { right: 0; bottom: 0 }
+
+input {
+    margin: 0;
+    min-width: 1vh;
+    min-height: 2vh;
+    padding-top: 0.5vh; 
+    padding-bottom: 0.5vh;
+    padding-left: 1vh; 
+    padding-right: 1vh;
+    background-color: rgba( 0, 0, 0, 0.5 );
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: 0 0 1vh black, inset 0 0 1vh black;
+    font-family: Trebuchet MS;
+    font-size: 1.5vh;
+    font-weight: normal;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 1vh black;
+}
+input.lt, input.rt, input.lb, input.rb { position: absolute; }
+input.lt { left: 0;  top: 0 }
+input.rt { right: 0; top: 0 }
+input.lb { left: 0;  bottom: 0 }
+input.rb { right: 0; bottom: 0 }
+
+.transparent { background-color: transparent; }
+
+.no-box-shadow { box-shadow: none; }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* in gui */
+interface-rt#gui-object-transforms {
+    margin: 1vh;
+    height: 40vh;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-position,
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation,
+interface-rt#gui-object-transforms label-lt#object-transforms-scale {
+    margin-left: 1vh;
+    color: black;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-position { margin-top: 1vh; }
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation { margin-top: 14vh; }
+interface-rt#gui-object-transforms label-lt#object-transforms-scale { margin-top: 27vh; }
+
+interface-rt#gui-object-transforms input#object-transforms-position-x, 
+interface-rt#gui-object-transforms input#object-transforms-position-y, 
+interface-rt#gui-object-transforms input#object-transforms-position-z,
+interface-rt#gui-object-transforms input#object-transforms-rotation-x, 
+interface-rt#gui-object-transforms input#object-transforms-rotation-y, 
+interface-rt#gui-object-transforms input#object-transforms-rotation-z,
+interface-rt#gui-object-transforms input#object-transforms-scale-x, 
+interface-rt#gui-object-transforms input#object-transforms-scale-y, 
+interface-rt#gui-object-transforms input#object-transforms-scale-z {
+    margin-left: 4.5vh;
+    width: calc( 100% - 7.5vh );
+    height: 2vh;
+    text-align: left;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-position-x-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-position-y-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-position-z-label,
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-x-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-y-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-z-label,
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-x-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-y-label, 
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-z-label  {
+    margin-left: 1vh;
+    width: 0.75vh;
+    height: 1.75vh;
+    border-radius: 0.5vh;
+    padding-top: 0.25vh;
+}
+
+/* position */
+
+interface-rt#gui-object-transforms input#object-transforms-position-x {
+    margin-top: 4vh;
+    border-radius: 0.5vh 0.5vh 0 0;
+}
+interface-rt#gui-object-transforms input#object-transforms-position-y {
+    margin-top: 7vh;
+    border-radius: 0;
+    background-color: rgba( 0, 0, 0, 0.7 );
+}
+interface-rt#gui-object-transforms input#object-transforms-position-z {
+    margin-top: 10vh;
+    border-radius: 0 0 0.5vh 0.5vh;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-position-x-label {
+    margin-top: 4.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-position-y-label {
+    margin-top: 7.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-position-z-label {
+    margin-top: 10.25vh;
+}
+
+/* rotation */
+
+interface-rt#gui-object-transforms input#object-transforms-rotation-x {
+    margin-top: 17vh;
+    border-radius: 0.5vh 0.5vh 0 0;
+}
+interface-rt#gui-object-transforms input#object-transforms-rotation-y {
+    margin-top: 20vh;
+    border-radius: 0;
+    background-color: rgba( 0, 0, 0, 0.7 );
+}
+interface-rt#gui-object-transforms input#object-transforms-rotation-z {
+    margin-top: 23vh;
+    border-radius: 0 0 0.5vh 0.5vh;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-x-label {
+    margin-top: 17.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-y-label {
+    margin-top: 20.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-rotation-z-label {
+    margin-top: 23.25vh;
+}
+
+/* scale */
+
+interface-rt#gui-object-transforms input#object-transforms-scale-x {
+    margin-top: 30vh;
+    border-radius: 0.5vh 0.5vh 0 0;
+}
+interface-rt#gui-object-transforms input#object-transforms-scale-y {
+    margin-top: 33vh;
+    border-radius: 0;
+    background-color: rgba( 0, 0, 0, 0.7 );
+}
+interface-rt#gui-object-transforms input#object-transforms-scale-z {
+    margin-top: 36vh;
+    border-radius: 0 0 0.5vh 0.5vh;
+}
+
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-x-label {
+    margin-top: 30.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-y-label {
+    margin-top: 33.25vh;
+}
+interface-rt#gui-object-transforms label-lt#object-transforms-scale-z-label {
+    margin-top: 36.25vh;
+}
+
