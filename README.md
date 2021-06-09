@@ -41,9 +41,9 @@ world.init( true ) // initialize it with OrbitControls
 Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation*** cycle (including OrbitControls).
 ```javascript
 /* create a simple three.js scene with animation cycle */
-const gearz = new GearZ( true, { three: THREE }, true )
+const gearz = new GearZ( true, { three: THREE }, true ) // store and intialize engine data
 
-const world = gearz.threeJS.create.world() // store the scene data in a variable 
+const world = gearz.threeJS.create.world() // store the scene data
 world.init( true ) // initialize scene with OrbitControls
 
 /* animation cycle */
