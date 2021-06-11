@@ -12,15 +12,15 @@ Other external libraries in which this program can utilize:
 Again, thank you for choosing to use my **"Engine"**
 
 ## Installation
-* If you intend to use any external libraries that GearZ utilizes, they must be imported before GearZ. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
+If you intend to use any external libraries that GearZ utilizes, they must be imported before GearZ. This is done to ensure the Engine doesn't run into any errors when trying to take advantage of those libraries.
 ```html
 <script src="three.js"></script>
 <script src="gearx-cs.js"></script>
 ```
-* As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
+As of this release there is no NPM package of this engine so it must be installed through **HTML** or **Shorthand JavaScript**
 
 ## Usage (Updated)
-* The engine is ``function`` based ``class``, so you can call it by doing declaring a constant to represent it. Seen below.
+The engine is ``function`` based ``class``, so you can call it by doing declaring a constant to represent it. Seen below.
 ```javascript
 const gearz = new GearZ( true, { three: THREE }, false )
 ```
@@ -30,10 +30,10 @@ const gearz = new GearZ( true, { three: THREE }, false )
 
 ## Cool Examples
 Below are some examples showing off the engine's capabilities.
-* [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html)
-* [Loading Stored Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
+* [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html) (WIP for **Civilia** development)
+* [Loading and Storing Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
-## Newest Features
+## Newest & Useful Features
 Below are some of the newest features added to the engine.
 
 ### Creating a full [three.js](https://github.com/mrdoob/three.js/) scene in two lines
@@ -43,10 +43,10 @@ It can't get much more simpler than this. With just two lines, you can create a 
 const world = gearz.threeJS.create.world() // store the data in a variable
 world.init( true ) // initialize it with OrbitControls
 ```
-Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation*** cycle (including ``OrbitControls``).
+Of course, you have to allow it to render every frame to get a smooth image. Below is the least amount of code needed to create a scene with an ***animation cycle*** (including ``OrbitControls``).
 ```javascript
 /* create a simple three.js scene with animation cycle */
-const gearz = new GearZ( true, { three: THREE }, true ) // store and intialize engine data
+const gearz = new GearZ( true, { three: THREE }, false ) // store and intialize engine data
 
 const world = gearz.threeJS.create.world() // store the scene data
 world.init( true ) // initialize scene with OrbitControls
@@ -65,6 +65,6 @@ To see a live example of this in action, [check this out](https://gearshiftstudi
 ### Dynamic Dropdown Menu Creation
 You can make dropdown menus with custom UI based upon the properties you attribute to it. It's possible to create a really simple one with just this short amount of code:
 ```javascript
-Engine.element( 'body' ).add.dropdown( 'sports-drop', [ 'Football', 'Baseball', 'Basketball' ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
+gearz.element( 'body' ).add.dropdown( 'sports-drop', [ [ 'Football', 0 ], [ 'Baseball', 1 ], [ 'Basketball', 2 ] ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
 ```
-You can check this out along with 3 other dropdowns in this [example](https://gearshiftstudios.github.io/GearZ/examples/dropdowns.html) here. With just a few more properties and attributes you can make look professional.
+With just a few more properties and attributes you can make your dropdown look professional.
