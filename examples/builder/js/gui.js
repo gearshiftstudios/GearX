@@ -151,11 +151,17 @@
                                 this.objectSelected = objectIndex
 
                                 interfaces[ 'object-transforms' ].update()
+
+                                GearZ.element( 'gui-object-transforms' ).show()
                             } )
                         } else {
                             builder.controls.transform.detach()
+
+                            GearZ.element( 'gui-object-transforms' ).hide()
                         }
                     } )
+
+                    GearZ.element( 'gui-object-transforms' ).hide()
                 }
             }
         }
