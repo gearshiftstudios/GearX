@@ -709,6 +709,22 @@
 
 			}
 
+			this.onPointerDown = ( event ) => {
+				if ( builder ) {
+					if ( !builder.loaded ) {
+						if ( scope.enabled === false ) return;
+
+						switch ( event.pointerType ) {
+
+							case 'mouse':
+							case 'pen':
+								onMouseDown( event )
+								break
+						}
+					}
+				}
+			}
+
 			function onPointerMove( event ) {
 
 				if ( scope.enabled === false ) return;
@@ -739,6 +755,20 @@
 
 			}
 
+			this.onPointerUp = ( event ) => {
+
+				switch ( event.pointerType ) {
+
+					case 'mouse':
+					case 'pen':
+						onMouseUp( event );
+						break;
+        // TODO touch
+
+				}
+
+			}
+
 			function onMouseDown( event ) {
 
 				// Prevent the browser from scrolling.
@@ -747,6 +777,8 @@
 
 				scope.domElement.focus ? scope.domElement.focus() : window.focus();
 				let mouseAction;
+
+				console.log( event.button )
 
 				switch ( event.button ) {
 
@@ -765,6 +797,103 @@
 					default:
 						mouseAction = - 1;
 
+				}
+
+				switch ( mouseAction ) {
+
+					case THREE.MOUSE.DOLLY:
+						if ( scope.enableZoom === false ) return;
+						handleMouseDownDolly( event );
+						state = STATE.DOLLY;
+						break;
+
+					case THREE.MOUSE.ROTATE:
+						if ( event.ctrlKey || event.metaKey || event.shiftKey ) {
+
+							if ( scope.enablePan === false ) return;
+							handleMouseDownPan( event );
+							state = STATE.PAN;
+
+						} else {
+
+							if ( scope.enableRotate === false ) return;
+							handleMouseDownRotate( event );
+							state = STATE.ROTATE;
+
+						}
+
+						break;
+
+					case THREE.MOUSE.PAN:
+						if ( event.ctrlKey || event.metaKey || event.shiftKey ) {
+
+							if ( scope.enableRotate === false ) return;
+							handleMouseDownRotate( event );
+							state = STATE.ROTATE;
+
+						} else {
+
+							if ( scope.enablePan === false ) return;
+							handleMouseDownPan( event );
+							state = STATE.PAN;
+
+						}
+
+						break;
+
+					default:
+						state = STATE.NONE;
+
+				}
+
+				if ( state !== STATE.NONE ) {
+
+					scope.domElement.ownerDocument.addEventListener( 'pointermove', onPointerMove );
+					scope.domElement.ownerDocument.addEventListener( 'pointerup', onPointerUp );
+					scope.dispatchEvent( _startEvent );
+
+				}
+
+			}
+
+			this.onMouseDown = ( event, forceControl ) => {
+				const _forceControl = forceControl ? forceControl : null
+
+				// Prevent the browser from scrolling.
+				event.preventDefault(); // Manually set the focus since calling preventDefault above
+				// prevents the browser from setting it automatically.
+
+				scope.domElement.focus ? scope.domElement.focus() : window.focus();
+				let mouseAction;
+				
+				if ( _forceControl != null ) {
+					switch ( _forceControl ) {
+						case 'rotate':
+							mouseAction = THREE.MOUSE.ROTATE
+							break
+						case 'pan':
+							mouseAction = THREE.MOUSE.PAN
+							break
+					}
+				} else {
+					switch ( event.button ) {
+
+						case 0:
+							mouseAction = scope.mouseButtons.LEFT;
+							break;
+	
+						case 1:
+							mouseAction = scope.mouseButtons.MIDDLE;
+							break;
+	
+						case 2:
+							mouseAction = scope.mouseButtons.RIGHT;
+							break;
+	
+						default:
+							mouseAction = - 1;
+	
+					}
 				}
 
 				switch ( mouseAction ) {
@@ -860,6 +989,18 @@
 				state = STATE.NONE;
 
 			}
+
+			this.onMouseUp = event => {
+
+				scope.domElement.ownerDocument.removeEventListener( 'pointermove', onPointerMove );
+				scope.domElement.ownerDocument.removeEventListener( 'pointerup', onPointerUp );
+				if ( scope.enabled === false ) return;
+				handleMouseUp( event );
+				scope.dispatchEvent( _endEvent );
+				state = STATE.NONE;
+
+			}
+
 
 			function onMouseWheel( event ) {
 
@@ -998,7 +1139,6 @@
 
 
 			scope.domElement.addEventListener( 'contextmenu', onContextMenu );
-			scope.domElement.addEventListener( 'pointerdown', onPointerDown );
 			scope.domElement.addEventListener( 'wheel', onMouseWheel, {
 				passive: false
 			} );
@@ -1030,10 +1170,10 @@
 			super( object, domElement );
 			this.screenSpacePanning = false; // pan orthogonal to world-space direction camera.up
 
-			this.mouseButtons.LEFT = THREE.MOUSE.PAN;
-			this.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
-			this.touches.ONE = THREE.TOUCH.PAN;
-			this.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
+			this.mouseButtons.LEFT = null;
+			this.mouseButtons.RIGHT = null;
+			this.touches.ONE = null;
+			this.touches.TWO = null;
 
 		}
 

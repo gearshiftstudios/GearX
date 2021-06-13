@@ -1,0 +1,38 @@
+interface-lb#gui-object-transformation {
+    margin: 1vh;
+    width: 5vh;
+    height: 15vh;
+    overflow: hidden;
+}
+
+interface-lb#gui-object-transformation button-lt#object-transformation-translate,
+interface-lb#gui-object-transformation button-lt#object-transformation-rotate,
+interface-lb#gui-object-transformation button-lt#object-transformation-scale {
+    margin-left: 0vh;
+    width: 3vh;
+    height: 4vh;
+    background-size: 70% 70%;
+    border-radius: 0;
+}
+interface-lb#gui-object-transformation button-lt#object-transformation-translate:hover,
+interface-lb#gui-object-transformation button-lt#object-transformation-rotate:hover,
+interface-lb#gui-object-transformation button-lt#object-transformation-scale:hover {
+    background-color: transparent;
+    transform: scale( 1 );
+    background-size: 90% 90%;
+    background-color: rgba( 0, 225, 255, 0.5 );
+}
+interface-lb#gui-object-transformation button-lt#object-transformation-translate {
+    margin-top: 0vh;
+    background-image: url( ../../../images/builder/translate_object.128.png );
+}
+interface-lb#gui-object-transformation button-lt#object-transformation-rotate {
+    margin-top: 5vh;
+    background-image: url( ../../../images/builder/rotate_object.128.png );
+    background-color: rgba( 0, 0, 0, 0.25 );
+}
+interface-lb#gui-object-transformation button-lt#object-transformation-scale {
+    background-color: transparent;
+    margin-top: 10vh;
+    background-image: url( ../../../images/builder/scale_object.128.png );
+}

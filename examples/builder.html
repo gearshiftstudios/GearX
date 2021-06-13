@@ -15,10 +15,36 @@
         <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" type="text/css" href="./builder/css/elements.css"/>
+
+        <!-- gui -->
+        <link rel="stylesheet" type="text/css" href="./builder/css/gui/menu.css"/>
+        <link rel="stylesheet" type="text/css" href="./builder/css/gui/object-transformation.css"/>
+        <link rel="stylesheet" type="text/css" href="./builder/css/gui/object-transforms.css"/>
+        <link rel="stylesheet" type="text/css" href="./builder/css/gui/entity-collection.css"/>
     </head>
 
     <body id="body">
-        <gui>
+        <gui id='gui'>
+            <flex-container-lt id='gui-menu'>
+                <button-free id='menu-file'>File</button-free>
+                <button-free id='menu-edit'>Edit</button-free>
+            </flex-container-lt>
+
+            <interface-rt id='gui-entity-collection'>
+                <button-lt id='scene-rotate'></button-lt>
+                <button-lt id='scene-pan'></button-lt>
+
+                <label-lt id='entity-collection-label' class='transparent no-box-shadow'>Entity</label-lt>
+
+                <list-lt id='entity-collection-collection'></list-lt>
+            </interface-rt>
+
+            <interface-lb id='gui-object-transformation'>
+                <button-lt id='object-transformation-translate'></button-lt>
+                <button-lt id='object-transformation-rotate'></button-lt>
+                <button-lt id='object-transformation-scale'></button-lt>
+            </interface-lb>
+
             <interface-rt id='gui-object-transforms'>
                 <!-- position -->
 
@@ -66,7 +92,8 @@
 
         <script>
             const gearz = new GearZ( true, { three: THREE }, true ), g3d = gearz.threeJS, threeLib = gearz.three
-            gearz.cursor.set()
+            gearz.cursor.set().add( 'rotate.32', './images/builder/rotate.32.png', false )
+            .add( 'pan.32', './images/builder/pan.32.png', false )
 
             const world = gearz.threeJS.create.world() 
             world.init( true )
@@ -82,16 +109,19 @@
                 },
                 objects: new Array(),
             }
-            
-            builder.objects.push( g3d.mesh.create.regular( {
+
+            const defaultCube = g3d.mesh.create.regular( {
                 name: `mesh.${ gearz.operations.create.id() }`,
                 geometry: new threeLib.BoxGeometry( 2, 2, 2 ),
                 material: new threeLib.MeshPhongMaterial( { color: 'grey', flatShading: true } )
-            } ) )
+            } )
+            defaultCube.position.y = 1
+            
+            builder.objects.push( defaultCube )
 
             g3d.mesh.add( builder.objects, true ).to( world.scene, false )
 
-			const animate = function () {
+			const animate = () => {
 				requestAnimationFrame( animate )
 
 				world.render()

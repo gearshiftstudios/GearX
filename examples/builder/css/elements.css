@@ -19,7 +19,7 @@ interface-lt, interface-rt, interface-lb, interface-rb, interface {
     min-height: 2vh;
     width: 20vh;
     height: 10vh;
-    background-color: white;
+    background-color: #212124;
     border: none;
     border-radius: 1vh;
     box-shadow: 0 0 1vh black, inset 0 0 1vh black;
@@ -78,6 +78,72 @@ input.rt { right: 0; top: 0 }
 input.lb { left: 0;  bottom: 0 }
 input.rb { right: 0; bottom: 0 }
 
+list-lt, list-rt, list-lb, list-rb, list {
+    margin: 0;
+    padding: 0;
+    background-color: rgba( 0, 0, 0, 0.5 );
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: 0 0 1vh black, inset 0 0 1vh black;
+    font-family: Trebuchet MS;
+    font-size: 1.5vh;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 1vh black;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+list-lt, list-rt, list-lb, list-rb { position: absolute; }
+list-lt { left: 0;  top: 0 }
+list-rt { right: 0; top: 0 }
+list-lb { left: 0;  bottom: 0 }
+list-rb { right: 0; bottom: 0 }
+
+button-lt, button-rt, button-lb, button-rb, button-free {
+    margin: 0;
+    padding-top: 0.5vh; 
+    padding-bottom: 0.5vh;
+    padding-left: 1vh; 
+    padding-right: 1vh;
+    background-color: rgba( 0, 0, 0, 0.5 );
+    border: none;
+    border-radius: 0.5vh;
+    box-shadow: 0 0 1vh black, inset 0 0 1vh black;
+    font-family: Trebuchet MS;
+    font-size: 1.5vh;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 1vh black;
+    background-image: none;
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    transition: 0.15s ease;
+}
+button-lt, button-rt, button-lb, button-rb { position: absolute; }
+button-lt { left: 0;  top: 0 }
+button-rt { right: 0; top: 0 }
+button-lb { left: 0;  bottom: 0 }
+button-rb { right: 0; bottom: 0 }
+button-lt:hover, button-rt:hover, button-lb:hover, button-rb:hover, button-free:hover {
+    transform: scale( 1.1 );
+    box-shadow: 0 0 1vh black, inset 0 0 0.5vh white;
+}
+
+flex-container-lt, flex-container-rt, flex-container-lb, flex-container-rb, flex-container {
+    margin: 0;
+    display: flex;
+}
+flex-container-lt, flex-container-rt, flex-container-lb, flex-container-rb { position: absolute; }
+flex-container-lt { left: 0;  top: 0 }
+flex-container-rt { right: 0; top: 0 }
+flex-container-lb { left: 0;  bottom: 0 }
+flex-container-rb { right: 0; bottom: 0 }
+flex-container-lt.jc-center, flex-container-rt.jc-center, flex-container-l.jc-centerb, flex-container-rb.jc-center, flex-container.jc-center { justify-content: center; }
+flex-container-lt.ai-center, flex-container-rt.ai-center, flex-container-l.ai-centerb, flex-container-rb.ai-center, flex-container.ai-center { align-items: center; }
+
 .transparent { background-color: transparent; }
 
 .no-box-shadow { box-shadow: none; }
@@ -86,129 +152,9 @@ input.rb { right: 0; bottom: 0 }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
-/* in gui */
-interface-rt#gui-object-transforms {
-    margin: 1vh;
-    height: 40vh;
+/* animations */
+@keyframes active-event {
+    0% { background-color: rgba( 0, 0, 0, 0.7 ); }
+    50% { background-color: rgba(0, 225, 255, 0.5 ); }
+    100% { background-color: rgba( 0, 0, 0, 0.7 ); }
 }
-
-interface-rt#gui-object-transforms label-lt#object-transforms-position,
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation,
-interface-rt#gui-object-transforms label-lt#object-transforms-scale {
-    margin-left: 1vh;
-    color: black;
-}
-
-interface-rt#gui-object-transforms label-lt#object-transforms-position { margin-top: 1vh; }
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation { margin-top: 14vh; }
-interface-rt#gui-object-transforms label-lt#object-transforms-scale { margin-top: 27vh; }
-
-interface-rt#gui-object-transforms input#object-transforms-position-x, 
-interface-rt#gui-object-transforms input#object-transforms-position-y, 
-interface-rt#gui-object-transforms input#object-transforms-position-z,
-interface-rt#gui-object-transforms input#object-transforms-rotation-x, 
-interface-rt#gui-object-transforms input#object-transforms-rotation-y, 
-interface-rt#gui-object-transforms input#object-transforms-rotation-z,
-interface-rt#gui-object-transforms input#object-transforms-scale-x, 
-interface-rt#gui-object-transforms input#object-transforms-scale-y, 
-interface-rt#gui-object-transforms input#object-transforms-scale-z {
-    margin-left: 4.5vh;
-    width: calc( 100% - 7.5vh );
-    height: 2vh;
-    text-align: left;
-}
-
-interface-rt#gui-object-transforms label-lt#object-transforms-position-x-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-position-y-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-position-z-label,
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-x-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-y-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-z-label,
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-x-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-y-label, 
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-z-label  {
-    margin-left: 1vh;
-    width: 0.75vh;
-    height: 1.75vh;
-    border-radius: 0.5vh;
-    padding-top: 0.25vh;
-}
-
-/* position */
-
-interface-rt#gui-object-transforms input#object-transforms-position-x {
-    margin-top: 4vh;
-    border-radius: 0.5vh 0.5vh 0 0;
-}
-interface-rt#gui-object-transforms input#object-transforms-position-y {
-    margin-top: 7vh;
-    border-radius: 0;
-    background-color: rgba( 0, 0, 0, 0.7 );
-}
-interface-rt#gui-object-transforms input#object-transforms-position-z {
-    margin-top: 10vh;
-    border-radius: 0 0 0.5vh 0.5vh;
-}
-
-interface-rt#gui-object-transforms label-lt#object-transforms-position-x-label {
-    margin-top: 4.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-position-y-label {
-    margin-top: 7.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-position-z-label {
-    margin-top: 10.25vh;
-}
-
-/* rotation */
-
-interface-rt#gui-object-transforms input#object-transforms-rotation-x {
-    margin-top: 17vh;
-    border-radius: 0.5vh 0.5vh 0 0;
-}
-interface-rt#gui-object-transforms input#object-transforms-rotation-y {
-    margin-top: 20vh;
-    border-radius: 0;
-    background-color: rgba( 0, 0, 0, 0.7 );
-}
-interface-rt#gui-object-transforms input#object-transforms-rotation-z {
-    margin-top: 23vh;
-    border-radius: 0 0 0.5vh 0.5vh;
-}
-
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-x-label {
-    margin-top: 17.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-y-label {
-    margin-top: 20.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-rotation-z-label {
-    margin-top: 23.25vh;
-}
-
-/* scale */
-
-interface-rt#gui-object-transforms input#object-transforms-scale-x {
-    margin-top: 30vh;
-    border-radius: 0.5vh 0.5vh 0 0;
-}
-interface-rt#gui-object-transforms input#object-transforms-scale-y {
-    margin-top: 33vh;
-    border-radius: 0;
-    background-color: rgba( 0, 0, 0, 0.7 );
-}
-interface-rt#gui-object-transforms input#object-transforms-scale-z {
-    margin-top: 36vh;
-    border-radius: 0 0 0.5vh 0.5vh;
-}
-
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-x-label {
-    margin-top: 30.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-y-label {
-    margin-top: 33.25vh;
-}
-interface-rt#gui-object-transforms label-lt#object-transforms-scale-z-label {
-    margin-top: 36.25vh;
-}
-

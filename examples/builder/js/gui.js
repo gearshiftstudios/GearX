@@ -7,9 +7,44 @@
         @author Nikolas Karinja
     */ 
 
+    class Events {
+        constructor () {
+            this.panning = false
+            this.rotating = false
+        }
+
+        activate ( eventName, deactivateAll ) {
+            const _eventName = eventName ? eventName : null
+            const _deactivateAll = deactivateAll ? true : false
+            const events = new Array()
+
+            if ( _deactivateAll ) this.deactivateAll()
+
+            for ( const ev in this ) events.push( ev )
+
+            if ( events.includes( _eventName ) ) this[ _eventName ] = true
+            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"` ).error()
+        }
+
+        deactivate ( eventName ) {
+            const _eventName = eventName ? eventName : null
+            const events = new Array()
+
+            for ( const ev in this ) events.push( ev )
+
+            if ( events.includes( _eventName ) ) this[ _eventName ] = false
+            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"` ).error()
+        }
+
+        deactivateAll () {
+            for ( const ev in this ) this[ ev ] = false
+        }
+    }
+
     class GUI {
-        constructor ( GearZ ) {
+        constructor () {
             this.objectSelected = null
+            this.mouseEvent = null
 
             this.settings = {
                 translationSnap: [ true, 1 ],
@@ -29,22 +64,54 @@
                 transformations: {
                     update: () => {},
                 },
+                scene: {
+                    rotate: e => {
+                        gearz.cursor.set( 'rotate.32', 16, 16 )
+
+                        gearz.element( 'gui' ).set.pointerEvents( 'none' )
+                        gearz.element( 'scene-rotate' ).set.animation( 'active-event 1s infinite' )
+
+                        world.scene.controls.orbit.onMouseDown( e, 'rotate' )
+                        world.scene.events.activate( 'rotating' )
+                    },
+                    pan: e => {
+                        gearz.cursor.set( 'pan.32', 16, 16 )
+
+                        gearz.element( 'gui' ).set.pointerEvents( 'none' )
+                        gearz.element( 'scene-pan' ).set.animation( 'active-event 1s infinite' )
+
+                        world.scene.controls.orbit.onMouseDown( e, 'pan' )
+                        world.scene.events.activate( 'panning' )
+                    },
+                    releaseControls: () => {
+                        if ( this.mouseEvent != null ) world.scene.controls.orbit.onMouseUp( this.mouseEvent )
+
+                        gearz.cursor.set()
+
+                        gearz.element( 'gui' ).set.pointerEvents( 'auto' )
+
+                        world.scene.events.deactivateAll()
+
+                        gearz.element( 'scene-rotate' ).set.animation( 'none' )
+                        gearz.element( 'scene-pan' ).set.animation( 'none' )
+                    } 
+                },
                 'object-transforms': {
                     update: () => {
                         if ( this.objectSelected != null ) {
                             const object = builder.objects[ this.objectSelected ]
 
-                            GearZ.element( 'object-transforms-position-x' ).set.value( this.interfaces.checkNumber( object.position.x ) )
-                            GearZ.element( 'object-transforms-position-y' ).set.value( this.interfaces.checkNumber( object.position.y ) )
-                            GearZ.element( 'object-transforms-position-z' ).set.value( this.interfaces.checkNumber( object.position.z ) )
+                            gearz.element( 'object-transforms-position-x' ).set.value( this.interfaces.checkNumber( object.position.x ) )
+                            gearz.element( 'object-transforms-position-y' ).set.value( this.interfaces.checkNumber( object.position.y ) )
+                            gearz.element( 'object-transforms-position-z' ).set.value( this.interfaces.checkNumber( object.position.z ) )
 
-                            GearZ.element( 'object-transforms-rotation-x' ).set.value( `${ this.interfaces.checkNumber( GearZ.operations.convert( 'rad', object.rotation.x ).to.deg() ) } deg` )
-                            GearZ.element( 'object-transforms-rotation-y' ).set.value( `${ this.interfaces.checkNumber( GearZ.operations.convert( 'rad', object.rotation.y ).to.deg() ) } deg` )
-                            GearZ.element( 'object-transforms-rotation-z' ).set.value( `${ this.interfaces.checkNumber( GearZ.operations.convert( 'rad', object.rotation.z ).to.deg() ) } deg` )
+                            gearz.element( 'object-transforms-rotation-x' ).set.value( `${ this.interfaces.checkNumber( gearz.operations.convert( 'rad', object.rotation.x ).to.deg() ) } deg` )
+                            gearz.element( 'object-transforms-rotation-y' ).set.value( `${ this.interfaces.checkNumber( gearz.operations.convert( 'rad', object.rotation.y ).to.deg() ) } deg` )
+                            gearz.element( 'object-transforms-rotation-z' ).set.value( `${ this.interfaces.checkNumber( gearz.operations.convert( 'rad', object.rotation.z ).to.deg() ) } deg` )
 
-                            GearZ.element( 'object-transforms-scale-x' ).set.value( this.interfaces.checkNumber( object.scale.x ) )
-                            GearZ.element( 'object-transforms-scale-y' ).set.value( this.interfaces.checkNumber( object.scale.y ) )
-                            GearZ.element( 'object-transforms-scale-z' ).set.value( this.interfaces.checkNumber( object.scale.z ) )
+                            gearz.element( 'object-transforms-scale-x' ).set.value( this.interfaces.checkNumber( object.scale.x ) )
+                            gearz.element( 'object-transforms-scale-y' ).set.value( this.interfaces.checkNumber( object.scale.y ) )
+                            gearz.element( 'object-transforms-scale-z' ).set.value( this.interfaces.checkNumber( object.scale.z ) )
                         }
                     },
                 }
@@ -72,8 +139,10 @@
                     set = this.set,
                     interfaces = this.interfaces
 
+                    world.scene.events = new Events()
+
                     builder.controls.transform.setTranslationSnap( settings.translationSnap[ 1 ] )
-                    builder.controls.transform.setRotationSnap( GearZ.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
+                    builder.controls.transform.setRotationSnap( gearz.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
                     builder.controls.transform.setScaleSnap( settings.scaleSnap[ 1 ] )
 
                     g3d.mesh.add( builder.controls.transform, false ).to( world.scene, false )
@@ -86,44 +155,8 @@
                         interfaces[ 'object-transforms' ].update()
                     } )
 
-                    document.addEventListener( 'keypress', e => {
-                        if ( interfaces.selected == 'transformations' || interfaces.selected == 'world' ) {
-                            if ( e.code == 'KeyA' ) set.transformation( 'translate' )
-                            else if ( e.code == 'KeyS' ) set.transformation( 'rotate' )
-                            else if ( e.code == 'KeyD' ) set.transformation( 'scale' )
-                            else if ( e.code == 'KeyQ' ) {
-                                if ( settings.translationSnap[ 0 ] ) {
-                                    settings.translationSnap[ 0 ] = false
-
-                                    builder.controls.transform.setTranslationSnap( 0 )
-                                } else {
-                                    settings.translationSnap[ 0 ] = true
-
-                                    builder.controls.transform.setTranslationSnap( settings.translationSnap[ 1 ] )
-                                }
-                            } else if ( e.code == 'KeyW' ) {
-                                if ( settings.rotationSnap[ 0 ] ) {
-                                    settings.rotationSnap[ 0 ] = false
-
-
-                                    builder.controls.transform.setRotationSnap( 0 )
-                                } else {
-                                    settings.rotationSnap[ 0 ] = true
-
-                                    builder.controls.transform.setRotationSnap( GearZ.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
-                                }
-                            } else if ( e.code == 'KeyE' ) {
-                                if ( settings.scaleSnap[ 0 ] ) {
-                                    settings.scaleSnap[ 0 ] = false
-
-                                    builder.controls.transform.setScaleSnap( 0 )
-                                } else {
-                                    settings.scaleSnap[ 0 ] = true
-
-                                    builder.controls.transform.setScaleSnap( settings.scaleSnap[ 1 ] )
-                                }
-                            }
-                        }
+                    builder.controls.transform.addEventListener( 'change', e => {
+                        interfaces[ 'object-transforms' ].update()
                     } )
 
                     builder.element.add.listener( 'mousemove', e => {
@@ -152,16 +185,110 @@
 
                                 interfaces[ 'object-transforms' ].update()
 
-                                GearZ.element( 'gui-object-transforms' ).show()
+                                gearz.element( 'gui-object-transforms' ).show()
                             } )
-                        } else {
-                            builder.controls.transform.detach()
-
-                            GearZ.element( 'gui-object-transforms' ).hide()
                         }
                     } )
 
-                    GearZ.element( 'gui-object-transforms' ).hide()
+                    builder.element.add.listener( 'dblclick', e => {
+                        const intersects = builder.mouse.ray.intersectObjects( builder.objects )
+
+                        if ( intersects.length > 0 ) {
+                        } else {
+                            builder.controls.transform.detach()
+
+                            gearz.element( 'gui-object-transforms' ).hide()
+                        }
+                    } )
+
+                    /* object controls */
+                    gearz.element( 'object-transformation-translate' ).add.listener( 'click', () => set.transformation( 'translate' ) ) 
+                    gearz.element( 'object-transformation-rotate' ).add.listener( 'click', () => set.transformation( 'rotate' ) ) 
+                    gearz.element( 'object-transformation-scale' ).add.listener( 'click', () => set.transformation( 'scale' ) ) 
+
+                    /* scene controls */ 
+                    gearz.element( 'scene-rotate' ).add.listener( 'mousedown', e => interfaces.scene.rotate( e ) )
+                    gearz.element( 'scene-pan' ).add.listener( 'mousedown', e => interfaces.scene.pan( e ) )
+
+                    /* document events */ 
+                    document.addEventListener( 'keyup', interfaces.scene.releaseControls )
+                    document.addEventListener( 'mouseup', interfaces.scene.releaseControls )
+                    document.addEventListener( 'mousemove', e => this.mouseEvent = e )
+
+                    document.addEventListener( 'keypress', e => {
+                        if ( interfaces.selected == 'transformations' || interfaces.selected == 'world' ) {
+                            switch ( e.code ) {
+                                case 'KeyA':
+                                    set.transformation( 'translate' )
+                                    break
+                                case 'KeyS':
+                                    set.transformation( 'rotate' )
+                                    break
+                                case 'KeyD':
+                                    set.transformation( 'scale' )
+                                    break
+                                case 'KeyQ':
+                                    if ( settings.translationSnap[ 0 ] ) {
+                                        settings.translationSnap[ 0 ] = false
+    
+                                        builder.controls.transform.setTranslationSnap( 0 )
+                                    } else {
+                                        settings.translationSnap[ 0 ] = true
+    
+                                        builder.controls.transform.setTranslationSnap( settings.translationSnap[ 1 ] )
+                                    }
+
+                                    break
+                                case 'KeyW':
+                                    if ( settings.rotationSnap[ 0 ] ) {
+                                        settings.rotationSnap[ 0 ] = false
+    
+    
+                                        builder.controls.transform.setRotationSnap( 0 )
+                                    } else {
+                                        settings.rotationSnap[ 0 ] = true
+    
+                                        builder.controls.transform.setRotationSnap( gearz.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
+                                    }
+
+                                    break
+                                case 'KeyE':
+                                    if ( settings.scaleSnap[ 0 ] ) {
+                                        settings.scaleSnap[ 0 ] = false
+    
+                                        builder.controls.transform.setScaleSnap( 0 )
+                                    } else {
+                                        settings.scaleSnap[ 0 ] = true
+    
+                                        builder.controls.transform.setScaleSnap( settings.scaleSnap[ 1 ] )
+                                    }
+
+                                    break
+                                case 'Space':
+                                    builder.controls.transform.detach()
+                                    break
+                            }
+                        }
+                    } )
+
+                    document.addEventListener( 'keydown', e => {
+                        if ( interfaces.selected == 'transformations' || interfaces.selected == 'world' ) {
+                            switch ( e.code ) {
+                                case 'KeyZ':
+                                    if ( this.mouseEvent != null ) interfaces.scene.pan( this.mouseEvent )
+                                    break
+                                case 'KeyX':
+                                    if ( this.mouseEvent != null ) interfaces.scene.rotate( this.mouseEvent )
+                                    break
+                            }
+                        }
+                    } )
+
+                    document.addEventListener( 'contextmenu', e => {
+                        e.preventDefault()
+                    } )
+
+                    gearz.element( 'gui-object-transforms' ).hide()
                 }
             }
         }

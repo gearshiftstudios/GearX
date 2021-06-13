@@ -82,6 +82,21 @@
 
         this.elements = { dropdowns: {} }
 
+        this.check = {
+            exists: variable => {
+                if ( typeof variable != 'undefined' ) return true
+                else return false
+            },
+            typeOf: ( variable, type ) => {
+                const _type = type ? type : 'string'
+
+                if ( this.check.exists( variable ) ) {
+                    if ( typeof variable == type ) return true
+                    else return false
+                }
+            }
+        }
+
         this.audio = {
             stored: {},
             play: ( audio, options ) => {
@@ -301,11 +316,37 @@
 
         /* manage cursors */
         this.cursor = {
+            previous: new Array(),
+            current: new Array(),
             directory: [ 'images/cursors/', false ], // directory, isGithubImage
             types: {
                 /* name: image, useDirectory */ 
                 'normal': [ 'normal.png', true ],
                 'sketch collar': [ 'sketch_collar.png', true ]
+            },
+            show: ( element, isId ) => {
+                const current = this.cursor.current, _isId = isId ? isId : false
+
+                let _element = element ? element : 'body'
+                
+                if ( _element == 'body' ) _element = document.body
+                else {
+                    if ( _isId ) _element = document.getElementById( _element )
+                }
+
+                if ( current.length > 0 ) _element.style.cursor = `url( ${ current[ 0 ] } ) ${ current[ 1 ] } ${ current[ 2 ] }, auto`
+            },
+            hide: ( element, isId ) => {
+                const _isId = isId ? isId : false
+
+                let _element = element ? element : 'body'
+
+                if ( _element == 'body' ) _element = document.body
+                else {
+                    if ( _isId ) _element = document.getElementById( _element )
+                }
+
+                _element.style.cursor = 'none'
             },
             set: ( name, xOffset, yOffset, element, isId ) => {
                 const _name = name ? name : 'normal'
@@ -328,6 +369,14 @@
                 } else this.log( `Couldn't find a cursor stored in the engine with the name "${ _name }"` ).error()
 
                 _element.style.cursor = `url( ${ url } ) ${ _xOffset } ${ _yOffset }, auto`
+
+                if ( this.cursor.current.length > 0 ) this.cursor.previous = this.cursor.current
+
+                this.cursor.current = new Array( url, _xOffset, _yOffset )
+
+                return {
+                    add: this.cursor.add
+                }
             },
             add: ( name, image, useDirectory ) => {
                 const _name = name ? name : `cursor.${ this.operations.create.id() }`
@@ -346,6 +395,7 @@
                 } else this.log( `There is already a cursor already stored in the engine with the name "${ _name }". Use the "change" method to change it's properties.` ).error()
 
                 return {
+                    add: this.cursor.add,
                     set: ( xOffset, yOffset, element, isId ) => {
                         const _xOffset = xOffset ? xOffset : 0
                         const _yOffset = yOffset ? yOffset : 0

@@ -1,0 +1,40 @@
+interface-rt#gui-entity-collection {
+    margin-top: 1vh;
+    margin-right: 1vh;
+    width: 26vh;
+    height: 50vh;
+}
+
+/* scene controls */
+interface-rt#gui-entity-collection button-lt#scene-rotate, interface-rt#gui-entity-collection button-lt#scene-pan {
+    margin-left: -5vh;
+    width: 2vh;
+    height: 3vh;
+    border-radius: 50%;
+    background-size: 90%;
+}
+interface-rt#gui-entity-collection button-lt#scene-rotate {
+    margin-top: 0vh;
+    background-image: url( ../../../images/builder/rotate.128.png );
+}
+interface-rt#gui-entity-collection button-lt#scene-pan {
+    margin-top: 5vh;
+    background-image: url( ../../../images/builder/pan.128.png );
+}
+
+/* main */
+interface-rt#gui-entity-collection list-lt#entity-collection-collection {
+    margin-top: 5vh;
+    margin-left: 1vh;
+    width: calc( 100% - 2vh );
+    height: calc( 100% - 6vh );
+}
+
+interface-rt#gui-entity-collection label-lt#entity-collection-label {
+    margin-top: 0.75vh;
+    margin-left: 1vh;
+    font-size: 2.5vh;
+    width: calc( 100% - 2vh );
+    font-weight: bolder;
+    text-align: left;
+}

@@ -1,0 +1,22 @@
+flex-container-lt#gui-menu {
+    margin: 1vh;
+    overflow: hidden;
+    border-radius: 1vh;
+    height: 3.25vh;
+}
+
+flex-container-lt#gui-menu button-free#menu-file, 
+flex-container-lt#gui-menu button-free#menu-edit {
+    font-size: 2vh;
+    height: 2.25vh;
+    border-radius: 0;
+    background-color: #212124;
+    font-weight: bolder;
+}
+
+flex-container-lt#gui-menu button-free#menu-file:hover,
+flex-container-lt#gui-menu button-free#menu-edit:hover {
+    transform: scale( 1 );
+    color: white;
+    background-color: rgba( 0, 225, 255, 0.5 );
+}
