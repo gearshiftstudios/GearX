@@ -33,9 +33,9 @@ Below are some examples showing off the engine's capabilities.
 * [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html) (WIP for **Civilia** development)
 * [Loading and Storing Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
-Below is a screenshot taken on 6/12/21 (the most current commit) of the builder example.
+Below is a screenshot taken on **6/12/21** (the most recent commit) of the [builder example](https://gearshiftstudios.github.io/GearZ/examples/builder.html).
 
-![image](https://user-images.githubusercontent.com/28771488/121796241-ea56e280-cbd4-11eb-9f4c-ded3c73da661.png)
+![image](https://user-images.githubusercontent.com/28771488/121796320-4cafe300-cbd5-11eb-822a-e6cd3e9a80bf.png)
 
 ## Newest & Useful Features
 Below are some of the newest features added to the engine.
@@ -62,7 +62,15 @@ const animate = () => {
     world.render() // needed to render scene (controls automatically update)
 }
 
-animate()
+animate() // begin rendering the program
+```
+If you want your scene to automatically resize the ``renderer`` and update the ``camera``, then just insert either one of the lines below into your program.
+```javascript
+/* The event listener way */
+window.addEventListener( 'resize', () => world.resize() )
+
+/* My way and probably many others too */
+window.onresize = () => world.resize()
 ```
 To see a live example of this in action, [check this out](https://gearshiftstudios.github.io/GearZ/examples/simple_three_scene.html).
 
