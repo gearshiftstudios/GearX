@@ -33,7 +33,7 @@ Below are some examples showing off the engine's capabilities.
 * [Builder](https://gearshiftstudios.github.io/GearZ/examples/builder.html) (WIP for **Civilia** development)
 * [Loading and Storing Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
-Below is a screenshot taken on **6/12/21** (the most current commit) of the builder example.
+Below is a screenshot taken on **6/12/21** (the most current commit) of the [builder example](https://gearshiftstudios.github.io/GearZ/examples/builder.html).
 
 ![image](https://user-images.githubusercontent.com/28771488/121796320-4cafe300-cbd5-11eb-822a-e6cd3e9a80bf.png)
 
