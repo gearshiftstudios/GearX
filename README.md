@@ -34,6 +34,7 @@ Below are some examples showing off the engine's capabilities.
 * [Loading and Storing Meshes](https://gearshiftstudios.github.io/GearZ/examples/loading_stored_meshes.html)
 
 Below is a screenshot taken on 6/12/21 (the most current commit) of the builder example.
+
 ![image](https://user-images.githubusercontent.com/28771488/121796241-ea56e280-cbd4-11eb-9f4c-ded3c73da661.png)
 
 ## Newest & Useful Features
