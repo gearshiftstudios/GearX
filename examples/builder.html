@@ -121,6 +121,8 @@
 
             g3d.mesh.add( builder.objects, true ).to( world.scene, false )
 
+            window.onresize = () => world.resize()
+
 			const animate = () => {
 				requestAnimationFrame( animate )
 

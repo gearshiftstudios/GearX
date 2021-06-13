@@ -1042,6 +1042,14 @@
                                     orbit: orbitControls == true ? new _this.three.OrbitControls( this.camera, this.renderer.domElement ) : null,
                                 }
                             },
+                            resize: function () {
+                                if ( this.camera ) {
+                                    this.camera.aspect = window.innerWidth / window.innerHeight
+                                    this.camera.updateProjectionMatrix()
+                                }
+
+                                if ( this.renderer ) this.renderer.setSize( window.innerWidth, window.innerHeight )
+                            },
                             render: function () {
                                 if ( this.scene.controls ) {
                                     if ( this.scene.controls.orbit != null ) this.scene.controls.orbit.update()

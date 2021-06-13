@@ -89,7 +89,9 @@
 
             gearz.threeJS.mesh.addStoredToLocal( true, true )
 
-			const animate = function () {
+            window.onresize = () => world.resize()
+
+			const animate = () => {
 				requestAnimationFrame( animate )
 
                 world.scene.helpers.grid.rotation.x += 0.005
