@@ -35,7 +35,7 @@ Below are some examples showing off the engine's capabilities.
 
 Below is a screenshot taken on 6/12/21 (the most current commit) of the builder example.
 
-![image](https://user-images.githubusercontent.com/28771488/121796241-ea56e280-cbd4-11eb-9f4c-ded3c73da661.png)
+![image](https://user-images.githubusercontent.com/28771488/121796320-4cafe300-cbd5-11eb-822a-e6cd3e9a80bf.png)
 
 ## Newest & Useful Features
 Below are some of the newest features added to the engine.
