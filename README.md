@@ -62,7 +62,7 @@ const animate = () => {
     world.render() // needed to render scene (controls automatically update)
 }
 
-animate()
+animate() // begin rendering the program
 ```
 If you want your scene to automatically resize the ``renderer`` and update the ``camera``, then just insert either one of the lines below into your program.
 ```javascript
