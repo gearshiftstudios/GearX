@@ -64,9 +64,13 @@ const animate = () => {
 
 animate()
 ```
-If you want your scene to automatically resize the ``renderer`` and update the ``camera``, then just insert the line below into your program.
+If you want your scene to automatically resize the ``renderer`` and update the ``camera``, then just insert either one of the lines below into your program.
 ```javascript
+/* The event listener way */
 window.addEventListener( 'resize', () => world.resize() )
+
+/* My way and probably many others too */
+window.onresize = () => world.resize()
 ```
 To see a live example of this in action, [check this out](https://gearshiftstudios.github.io/GearZ/examples/simple_three_scene.html).
 
