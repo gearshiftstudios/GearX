@@ -82,6 +82,7 @@ To minimize ***load and draw*** time for the images you are using in your progra
     
     options.prefix + image URL + options.suffix
 */
+
 gearz.preloadImages( [
     'images/builder/translate_object.128',
     'images/builder/rotate_object.128',
