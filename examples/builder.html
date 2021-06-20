@@ -110,17 +110,6 @@
                 objects: new Array(),
             }
 
-            const defaultCube = g3d.mesh.create.regular( {
-                name: `mesh.${ gearz.operations.create.id() }`,
-                geometry: new threeLib.BoxGeometry( 2, 2, 2 ),
-                material: new threeLib.MeshPhongMaterial( { color: 'grey', flatShading: true } )
-            } )
-            defaultCube.position.y = 1
-            
-            builder.objects.push( defaultCube )
-
-            g3d.mesh.add( builder.objects, true ).to( world.scene, false )
-
             window.onresize = () => world.resize()
 
 			const animate = () => {
@@ -133,5 +122,6 @@
         </script>
         
         <script src="./builder/js/gui.js"></script>
+        <script src="./builder/js/logic.js"></script>
     </body>
 </html>

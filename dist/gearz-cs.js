@@ -942,6 +942,20 @@
             }
         }
 
+        this.createLogger = header => {
+            return content => {
+                const _header = header ? header: '[ GearZ ]'
+
+                const reg = () => console.log( `${ _header } ${ content }` )
+                const error = () => console.error( `${ _header } <!> ${ content }` )
+
+                return {
+                    reg: reg,
+                    error: error,
+                }
+            }
+        }
+
         /* Three.js stuff */
         if ( this.three ) {
             this.log( 'three.js found' ).reg()

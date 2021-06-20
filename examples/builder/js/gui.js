@@ -23,7 +23,7 @@
             for ( const ev in this ) events.push( ev )
 
             if ( events.includes( _eventName ) ) this[ _eventName ] = true
-            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"` ).error()
+            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"`, 1 )
         }
 
         deactivate ( eventName ) {
@@ -33,7 +33,7 @@
             for ( const ev in this ) events.push( ev )
 
             if ( events.includes( _eventName ) ) this[ _eventName ] = false
-            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"` ).error()
+            else builder.gui.log( `Couldn't find an event with the name of "${ _eventName }"`, 1 )
         }
 
         deactivateAll () {
@@ -42,7 +42,8 @@
     }
 
     class GUI {
-        constructor () {
+        constructor ( gearz ) {
+            this.logger = gearz ? gearz.createLogger( '[ Logic ]' ) : null
             this.objectSelected = null
             this.mouseEvent = null
 
@@ -129,7 +130,7 @@
                         builder.controls.transform.setMode( _type )
 
                         this.interfaces.transformations.update()
-                    } else this.log( '( => set.transformation ) Not a type of transformation' ).error()
+                    } else this.log( '( => set.transformation ) Not a type of transformation', 1 )
                 }
             }
 
@@ -293,12 +294,29 @@
             }
         }
 
-        log ( content ) {
-            const header = 'GUI'
+        log ( content, type ) {
+            const _content = content ? content : 'Message logged'
 
-            return {
-                reg: () => console.log( `[ ${ header } ] ${ content }` ),
-                error: () => console.error( `[ ${ header } ] <!> ${ content }` ),
+            let _type
+
+            switch ( type ) {
+                case 0:
+                    _type = 'reg'
+                    break
+                case 1:
+                    _type = 'error'
+                    break
+
+                default:
+                    _type = 'reg'
+                    break
+            }
+
+            if ( this.logger != null ) this.logger( _content )[ _type ]()
+            else {
+                if ( _type == 'reg' ) _type = 'log'
+
+                console[ _type ]( _content )
             }
         }
     }
