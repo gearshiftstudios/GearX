@@ -75,8 +75,13 @@ window.onresize = () => world.resize()
 To see a live example of this in action, [check this out](https://gearshiftstudios.github.io/GearZ/examples/simple_three_scene.html).
 
 ### Preload Images
+To minimize ***load and draw*** time for the images you are using in your program, you can give the engine an array of images to load before the program starts up.
 ```javascript
-/* gearz.preloadImages( array of images, options for the URLs ) */
+/* 
+    gearz.preloadImages( array of images, options for the URLs )
+    
+    options.prefix + image URL + options.suffix
+*/
 gearz.preloadImages( [
     'images/builder/translate_object.128',
     'images/builder/rotate_object.128',
