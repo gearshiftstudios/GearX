@@ -899,22 +899,32 @@
             return false
         }
 
-        this.preloadImages = array => {
+        this.preloadImages = ( array, options ) => {
+            const presets = {}
+
+            if ( options ) {
+                presets.prefix = options.prefix ? options.prefix : String()
+                presets.suffix = options.suffix ? options.suffix : String()
+            } else {
+                presets.prefix = String()
+                presets.suffix = String()
+            }
+
             if ( !this.preloadedImages ) this.preloadedImages = new Array()
 
-            let list = this.preloadedImages
+            const list = this.preloadedImages
 
-            array.forEach( ( image ) => {
-                let img = new Image()
+            array.forEach( image => {
+                const img = new Image()
 
                 img.onload = () => {   
-                    let imgIndex = list.indexOf( this )
+                    const imgIndex = list.indexOf( this )
 
                     if ( imgIndex != -1 ) list.splice( imgIndex, 1 )
                 }
 
-                list.push( img );
-                img.src = image;
+                list.push( img )
+                img.src = presets.prefix + image + presets.suffix
             } )
         }
 

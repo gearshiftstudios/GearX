@@ -142,6 +142,14 @@
 
                     world.scene.events = new Events()
 
+                    gearz.preloadImages( [
+                        'images/builder/translate_object.128',
+                        'images/builder/rotate_object.128',
+                        'images/builder/scale_object.128',
+                        'images/builder/rotate.128',
+                        'images/builder/pan.128'
+                    ], { suffix: '.png' } )
+
                     builder.controls.transform.setTranslationSnap( settings.translationSnap[ 1 ] )
                     builder.controls.transform.setRotationSnap( gearz.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
                     builder.controls.transform.setScaleSnap( settings.scaleSnap[ 1 ] )
