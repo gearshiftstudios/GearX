@@ -467,17 +467,24 @@
 
             let _element
 
-            switch ( _type ) {
-                case 'id':
-                    _element = document.getElementById( element )
-                    break
-                case 'q':
-                    _element = document.querySelector( element )
-                    break
-                case 'qAll':
-                    _element = document.querySelectorAll( element )
-                    break
-            }
+            if ( this.check.typeOf( _type, 'string' ) == true ) {
+                if ( _type == 'id' || _type == 'q' || _type == 'qAll' ) {
+                    switch ( _type ) {
+                        case 'id':
+                            if ( document.getElementById( element ) ) _element = document.getElementById( element )
+                            else this.log( `The element "${ element }" doesn't exist` ).error()
+                            break
+                        case 'q':
+                            if ( document.getElementById( element ) ) _element = document.querySelector( element )
+                            else this.log( `The element "${ element }" doesn't exist` ).error()
+                            break
+                        case 'qAll':
+                            if ( document.getElementById( element ) ) _element = document.querySelectorAll( element )
+                            else this.log( `The element "${ element }" doesn't exist` ).error()
+                            break
+                    }
+                } else this.log( `"${ _type }" is not an element type` ).error()
+            } else this.log( 'Element format must be a string' ).error()
 
             const render = content => {
                 _element.innerHTML += content
