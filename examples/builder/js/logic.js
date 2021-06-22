@@ -9,11 +9,18 @@
         constructor ( gearz, threejs, scene ) {
             this.logger = gearz ? gearz.createLogger( '[ Logic ]' ) : null
 
+            this.basic = {
+                material: new threejs.MeshStandardMaterial( { color: 'grey', flatShading: true } )
+            }
+
             this.integrated = {
+                sphere: {
+                    basic: true,
+                    geometry: ( r, wS, hS ) => { return new threejs.SphereGeometry( r ? r : 4, wS ? wS : 8, hS ? hS : 6 ) },
+                },
                 cube: {
                     basic: true,
                     geometry: ( sX, sY, sZ ) => { return new threejs.BoxGeometry( sX ? sX : 2, sY ? sY : 5, sZ ? sZ : 2 ) },
-                    material: () => { return new threejs.MeshStandardMaterial( { color: 'grey' } ) },
                 }
             }
 
@@ -27,7 +34,7 @@
                         if ( _type in this.integrated ) {
                             if ( this.integrated[ _type ].basic ) {
                                 geometry = this.integrated[ _type ].geometry()
-                                material = this.integrated[ _type ].material()
+                                material = this.basic.material
                             }
 
                             object = gearz.threeJS.mesh.create.regular( {
@@ -37,7 +44,7 @@
 
                             object.name = `object.${ gearz.operations.create.id() }`
                             
-                            if ( !position ) object.position.y = object.geometry.parameters.height / 2
+                            if ( !position ) object.position.y = object.geometry.parameters.height ? object.geometry.parameters.height / 2 : 0
 
                             builder.objects.push( object ) 
 

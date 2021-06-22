@@ -462,8 +462,23 @@
             } else this.log( 'This element is not a dropdown' ).error()
         }
 
-        this.element = element => {
-            const _element = document.getElementById( element )
+        this.element = ( element, type ) => {
+            const _type = type ? type : 'id'
+
+            let _element
+
+            switch ( _type ) {
+                case 'id':
+                    _element = document.getElementById( element )
+                    break
+                case 'q':
+                    _element = document.querySelector( element )
+                    break
+                case 'qAll':
+                    _element = document.querySelectorAll( element )
+                    break
+            }
+
             const render = content => {
                 _element.innerHTML += content
 
@@ -770,6 +785,8 @@
                 filter: () => { return _element.style.filter },
                 offsetTop: () => { return _element.offsetTop },
                 offsetLeft: () => { return _element.offsetLeft },
+                offsetWidth: () => { return _element.offsetWidth },
+                offsetHeight: () => { return _element.offsetHeight },
                 transform: () => { return _element.style.transform },
                 value: () => { return _element.value },
                 valueLength: () => {  return _element.value.length },
@@ -816,8 +833,8 @@
                 }, _time )
             }
 
-            const drag = enabled => {
-                const _enabled = enabled ? enabled : false
+            const drag = ( enabled, direction ) => {
+                const _enabled = enabled ? enabled : false, _direction = direction ? direction : 'lt'
 
                 if ( typeof _enabled == 'boolean' ) {
                     const position = {
@@ -837,14 +854,46 @@
                                 e.preventDefault()
     
                                 /* calculate the new cursor position */
-                                position.new.x = position.old.x - e.clientX
-                                position.new.y = position.old.y - e.clientY
-                                position.old.x = e.clientX
-                                position.old.y = e.clientY
     
                                 /* set new position of element */ 
-                                this.element( element ).set.marginTop( this.element( element ).get.offsetTop() - position.new.y, this.units.px )
-                                this.element( element ).set.marginLeft( this.element( element ).get.offsetLeft() - position.new.x, this.units.px )
+                                switch ( _direction ) {
+                                    case 'lt':
+                                        position.new.x = position.old.x - e.clientX
+                                        position.new.y = position.old.y - e.clientY
+                                        position.old.x = e.clientX
+                                        position.old.y = e.clientY
+
+                                        this.element( element ).set.marginTop( this.element( element ).get.offsetTop() - position.new.y, this.units.px )
+                                        this.element( element ).set.marginLeft( this.element( element ).get.offsetLeft() - position.new.x, this.units.px )
+                                        break
+                                    case 'rt':
+                                        position.new.x = position.old.x - ( e.clientX + this.element( element ).get.offsetWidth() )
+                                        position.new.y = position.old.y - e.clientY
+                                        position.old.x = e.clientX + this.element( element ).get.offsetWidth()
+                                        position.old.y = e.clientY
+
+                                        this.element( element ).set.marginTop( this.element( element ).get.offsetTop() - position.new.y, this.units.px )
+                                        this.element( element ).set.marginRight( ( window.innerWidth - ( this.element( element ).get.offsetLeft() + this.element( element ).get.offsetWidth() ) ) + position.new.x, this.units.px )
+                                        break
+                                    case 'lb':
+                                        position.new.x = position.old.x - e.clientX
+                                        position.new.y = position.old.y - ( e.clientY + this.element( element ).get.offsetHeight() )
+                                        position.old.x = e.clientX
+                                        position.old.y = e.clientY + this.element( element ).get.offsetHeight()
+    
+                                        this.element( element ).set.marginBottom( ( window.innerHeight - ( this.element( element ).get.offsetTop() + this.element( element ).get.offsetHeight() ) ) + position.new.y, this.units.px )
+                                        this.element( element ).set.marginLeft( this.element( element ).get.offsetLeft() - position.new.x, this.units.px )
+                                        break
+                                    case 'rb':
+                                        position.new.x = position.old.x - ( e.clientX + this.element( element ).get.offsetWidth() )
+                                        position.new.y = position.old.y - ( e.clientY + this.element( element ).get.offsetHeight() )
+                                        position.old.x = e.clientX + this.element( element ).get.offsetWidth()
+                                        position.old.y = e.clientY + this.element( element ).get.offsetHeight()
+    
+                                        this.element( element ).set.marginBottom( ( window.innerHeight - ( this.element( element ).get.offsetTop() + this.element( element ).get.offsetHeight() ) ) + position.new.y, this.units.px )
+                                        this.element( element ).set.marginRight( ( window.innerWidth - ( this.element( element ).get.offsetLeft() + this.element( element ).get.offsetWidth() ) ) + position.new.x, this.units.px )
+                                        break
+                                }
                             },
                         },
                         mousedown: e => {
@@ -852,8 +901,24 @@
                             e.preventDefault()
     
                             /* calculate the new cursor position at start-up */
-                            position.old.x = e.clientX
-                            position.old.y = e.clientY
+                            switch ( _direction ) {
+                                case 'lt':
+                                    position.old.x = e.clientX
+                                    position.old.y = e.clientY
+                                    break
+                                case 'rt':
+                                    position.old.x = e.clientX + this.element( element ).get.offsetWidth()
+                                    position.old.y = e.clientY
+                                    break
+                                case 'lb':
+                                    position.old.x = e.clientX
+                                    position.old.y = e.clientY + this.element( element ).get.offsetHeight()
+                                    break
+                                case 'rb':
+                                    position.old.x = e.clientX + this.element( element ).get.offsetWidth()
+                                    position.old.y = e.clientY + this.element( element ).get.offsetHeight()
+                                    break
+                            }
     
                             document.onmouseup = () => events.drag.stop() // stop dragging when mouse is not being held anymore
                             document.onmousemove = () => events.drag.track() // call when cursor moves
@@ -862,9 +927,11 @@
 
                     if ( _enabled ) {
                         if ( this.element( `${ element }-header` ).check.exists() ) this.element( `${ element }-header` ).add.listener( 'mousedown', e => events.mousedown( e ) )
+                        if ( this.element( `${ element }-dragger` ).check.exists() ) this.element( `${ element }-dragger` ).add.listener( 'mousedown', e => events.mousedown( e ) )
                         else this.element( element ).add.listener( 'mousedown', e => events.mousedown( e ) )
                     } else {
                         if ( this.element( `${ element }-header` ).check.exists() ) this.element( `${ element }-header` ).remove.listener( 'mousedown', e => events.mousedown( e ) )
+                        if ( this.element( `${ element }-dragger` ).check.exists() ) this.element( `${ element }-dragger` ).remove.listener( 'mousedown', e => events.mousedown( e ) )
                         else this.element( element ).remove.listener( 'mousedown', e => events.mousedown( e ) )
                     }
                 } else this.log( 'The argument passed for dragging is not a boolean' ).error()

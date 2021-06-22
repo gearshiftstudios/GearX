@@ -61,7 +61,7 @@
 
             this.interfaces = {
                 selected: 'world',
-                checkNumber: number => { return number.toString().split( '.' )[ number.toString().split( '.' )[ 1 ] ? 1 : 0 ].length > 7 ? number.toFixed( 7 ) : number },
+                checkNumber: number => { return number.toString().split( '.' )[ number.toString().split( '.' )[ 1 ] ? 1 : 0 ].length > 4 ? number.toFixed( 4 ) : number },
                 transformations: {
                     update: () => {},
                 },
@@ -149,6 +149,9 @@
                         'images/builder/rotate.128',
                         'images/builder/pan.128'
                     ], { suffix: '.png' } )
+
+                    gearz.element( 'gui-object-transforms' ).drag( true, 'rt' )
+                    gearz.element( 'gui-object-transformation' ).drag( true, 'lb' )
 
                     builder.controls.transform.setTranslationSnap( settings.translationSnap[ 1 ] )
                     builder.controls.transform.setRotationSnap( gearz.operations.convert( 'deg', settings.rotationSnap[ 1 ] ).to.rad() )
