@@ -74,6 +74,24 @@ window.onresize = () => world.resize()
 ```
 To see a live example of this in action, [check this out](https://gearshiftstudios.github.io/GearZ/examples/simple_three_scene.html).
 
+### Preload Images
+To minimize ***load and draw*** time for the images you are using in your program, you can give the engine an array of images to load before the program starts up.
+```javascript
+/* 
+    gearz.preloadImages( array of images, options for the URLs )
+    
+    options.prefix + image URL + options.suffix
+*/
+
+gearz.preloadImages( [
+    'images/builder/translate_object.128',
+    'images/builder/rotate_object.128',
+    'images/builder/scale_object.128',
+    'images/builder/rotate.128',
+    'images/builder/pan.128'
+], { suffix: '.png' } )
+```
+
 ### Dynamic Dropdown Menu Creation
 You can make dropdown menus with custom UI based upon the properties you attribute to it. It's possible to create a really simple one with just this short amount of code:
 ```javascript
