@@ -52,10 +52,7 @@
     */
 
     function GearZ ( addEvents, libReps, loadStored3DData ) {
-        const _this = this
-        const presets = {
-            libReps: {},
-        }
+        const _this = this, presets = { libReps: {} }
 
         if ( libReps ) {
             presets.libReps = {
@@ -94,6 +91,64 @@
                     if ( typeof variable == type ) return true
                     else return false
                 }
+            },
+            state: id => {
+                const states = this.element( 'STATE', 'tag' )
+
+                let state = null
+
+                if ( states.length > 0 ) {
+                    for ( let i = 0; i < states.length; i++ ) {
+                        if ( states[ i ].id == id ) {
+                            state = i
+
+                            break
+                        }
+                    }
+
+                    if ( state != null ) return true
+                    else return false
+                }
+            },
+            group: ( id, orientation ) => {
+                const _orientation = !orientation ? 'none' : ( G.check.typeOf( orientation, 'string' ) == false ) ? 'none' : ( orientation.toLowerCase() != 'none' && orientation.toLowerCase() != 'lt' && orientation.toLowerCase() != 'rt' && orientation.toLowerCase() != 'lb' && orientation.toLowerCase() != 'rb' ) ? 'none' : orientation
+
+                let __orientation
+
+                switch ( _orientation ) {
+                    case 'none':
+                        __orientation = ''
+                        break
+                    case 'lt':
+                        __orientation = 'ER-LT'
+                        break
+                    case 'rt':
+                        __orientation = 'ER-RT'
+                        break
+                    case 'lb':
+                        __orientation = 'ER-LB'
+                        break
+                    case 'rb':
+                        __orientation = 'ER-RB'
+                        break
+                }
+
+                const groups = this.element( `GROUP${ __orientation }`, 'tag' )
+
+                let group = null
+
+                if ( groups.length > 0 ) {
+                    for ( let i = 0; i < groups.length; i++ ) {
+                        if ( groups[ i ].id == id ) {
+                            group = i
+
+                            break
+                        }
+                    }
+
+                    if ( group != null ) return true
+                    else return false
+                }
             }
         }
 
@@ -102,12 +157,12 @@
             play: ( audio, options ) => {
                 if ( this.audio.stored[ audio ] ) {
                     const presets = {
-                        volume: options.volume ? options.volume : 1,
+                        volume: options.volume ? options.volume : parseFloat( 1 ),
                         loop: options.loop ? options.loop : false,
                         startTime: options.startTime ? options.startTime : 0,
                         transitionDurations: {
-                            start: options.tSd ? options.tSd : 0,
-                            end: options.tEd ? options.tEd : 0,
+                            start: !options ? 0 : options.tSd ? options.tSd : 0,
+                            end: !options ? 0 : options.tEd ? options.tEd : 0,
                         }
                     }
 
@@ -300,8 +355,17 @@
                 else if ( subtractors.length == 2 ) return subtractors[ 0 ].slice( startSubtracted, subtractors[ 1 ].length - endSubtracted )
             },
             random: {
-                bool: () => { return this.bools[ Math.floor( Math.random() * this.bools.length ) ] },
-                number: ( min, max ) => { return Math.random() * ( max - min ) + min },
+                bool: chanceOfTrue => { 
+                    const _cOT = chanceOfTrue <= 1 ? chanceOfTrue : 0.5
+
+                    return Math.random() >= ( 1 - _cOT )
+                },
+                number: ( min, max, floor ) => {
+                    const _floor = floor ? true : false
+
+                    if ( _floor ) return Math.floor( Math.random() * ( max - min ) + min )
+                    else return Math.random() * ( max - min ) + min
+                },
             },
         },
 
@@ -462,24 +526,90 @@
             } else this.log( 'This element is not a dropdown' ).error()
         }
 
+        this.state = element => {
+            const states = this.element( 'STATE', 'tag' )
+
+            let state = null
+
+            if ( states.length > 0 ) {
+                for ( let i = 0; i < states.length; i++ ) {
+                    if ( states[ i ].id == element ) {
+                        state = i
+
+                        break
+                    }
+                }
+
+                if ( state != null ) return this.element( states[ state ].id, 'id' )
+                else this.log( `The state "${ element }" doesn't exist` ).error()
+            }
+        }
+        this.group = ( element, orientation ) => {
+            const _orientation = !orientation ? 'none' : ( G.check.typeOf( orientation, 'string' ) == false ) ? 'none' : ( orientation.toLowerCase() != 'none' && orientation.toLowerCase() != 'lt' && orientation.toLowerCase() != 'rt' && orientation.toLowerCase() != 'lb' && orientation.toLowerCase() != 'rb' ) ? 'none' : orientation
+
+            let __orientation
+
+            switch ( _orientation ) {
+                case 'none':
+                    __orientation = ''
+                    break
+                case 'lt':
+                    __orientation = 'ER-LT'
+                    break
+                case 'rt':
+                    __orientation = 'ER-RT'
+                    break
+                case 'lb':
+                    __orientation = 'ER-LB'
+                    break
+                case 'rb':
+                    __orientation = 'ER-RB'
+                    break
+            }
+
+            const groups = this.element( `GROUP${ __orientation }`, 'tag' )
+
+            let group = null
+
+            if ( groups.length > 0 ) {
+                for ( let i = 0; i < groups.length; i++ ) {
+                    if ( groups[ i ].id == element ) {
+                        group = i
+
+                        break
+                    }
+                }
+
+                if ( group != null ) return this.element( groups[ group ].id, 'id' )
+                else this.log( `The group "${ element }" doesn't exist` ).error()
+            }
+        }
         this.element = ( element, type ) => {
             const _type = type ? type : 'id'
 
             let _element
 
             if ( this.check.typeOf( _type, 'string' ) == true ) {
-                if ( _type == 'id' || _type == 'q' || _type == 'qAll' ) {
+                if ( _type == 'id' || _type == 'cl' || _type == 'q' || _type == 'qAll' || _type == 'tag' ) {
                     switch ( _type ) {
                         case 'id':
                             if ( document.getElementById( element ) ) _element = document.getElementById( element )
                             else this.log( `The element "${ element }" doesn't exist` ).error()
                             break
+                        case 'cl':
+                            if ( document.getElementsByClassName( element ) ) return document.getElementsByClassName( element )
+                            else this.log( `The element "${ element }" doesn't exist` ).error()
+                            break
+                        case 'tag':
+                            if ( document.getElementsByTagName( element ) ) return document.getElementsByTagName( element )
+                            else this.log( `The element "${ element }" doesn't exist` ).error()
+                            break
                         case 'q':
-                            if ( document.getElementById( element ) ) _element = document.querySelector( element )
+                            if ( document.querySelector( element ) ) _element = document.querySelector( element )
                             else this.log( `The element "${ element }" doesn't exist` ).error()
                             break
                         case 'qAll':
-                            if ( document.getElementById( element ) ) _element = document.querySelectorAll( element )
+                            if ( document.querySelectorAll( element ) ) return document.querySelectorAll( element )
                             else this.log( `The element "${ element }" doesn't exist` ).error()
                             break
                     }
@@ -504,6 +634,7 @@
             }
             const retrieve = {
                 id: () => { return _element.id },
+                element: () => { return _element }
             }
             const remove = {
                 listener: ( eventNames, listener ) => {
@@ -1158,6 +1289,29 @@
                         }
                     },
                 },
+                group: {
+                    create: () => { return new this.three.Group() },
+                    add: ( object, isArray ) => {
+                        const _isArray = !isArray ? false : ( G.check.typeOf( isArray, 'boolean' ) == false ) ? false : ( isArray == false ) ? false : true
+
+                        return {
+                            to: group => {
+                                const _group = !group ? null : !group.type ? null : ( group.type != 'Group' ) ? null : group
+
+                                if ( _group != null ) {
+                                    switch ( _isArray ) {
+                                        case true:
+                                            object.forEach( o => _group.add( o ) )
+                                            break
+                                        case false:
+                                            _group.add( object )
+                                            break
+                                    }
+                                }
+                            },
+                        }
+                    },
+                },
                 mesh: {
                     stored: stored.meshes,
                     helpers: {
@@ -1366,8 +1520,6 @@
                         }
                     },
                     store: ( mesh, whereToStore, options ) => {
-                        let storage
-
                         const presets = {
                             storage: whereToStore ? whereToStore : 'engine',
                             name: mesh.name.length > 0 ? mesh.name : `mesh.${ this.operations.create.id( 11 ) }`
@@ -1378,6 +1530,8 @@
 
                             presets.name = options.name ? options.name : name
                         }
+
+                        if ( whereToStore != 'engine' || whereToStore != 'local' || whereToStore != 'engine local' ) whereToStore[ presets.name ] = mesh
 
                         if ( presets.storage == 'engine' ) {
                             // mesh.storage = [ 'engine' ]
@@ -1417,35 +1571,68 @@
                     }
                 },
                 materials: {
-                    faces: { names: [], data: [] },
-                    retrieveIndex: name => {
-                        const face = () => { return this.threeJS.materials.faces.names.indexOf( name ) }
+                    stored: {},
+                    create: {
+                        mesh: options => {
+                            const _options = options ? options : {}
 
-                        return {
-                            face: face
-                        }
+                            return {
+                                standard: () => { return new this.three.MeshStandardMaterial( _options ) },
+                                phong: () => { return new this.three.MeshPhongMaterial( _options ) },
+                                basic: () => { return new this.three.MeshBasicMaterial( _options ) },
+                            }
+                        },
                     },
-                    add: ( name, options ) => {
-                        const basic = () => {
-                            let _material = new this.three.MeshBasicMaterial( {
-                                color: new this.three.Color( options.color ),
-                                side: this.three.DoubleSide,
-                            } )
+                    add: {
+                        mesh: ( name, options ) => {
+                            const _name = name ? name : `material.${ this.operations.create.id() }`, _options = options ? options : {}
 
-                            const face = () => {
-                                this.threeJS.materials.faces.data.push( _material )
-                                this.threeJS.materials.faces.names.push( name )
+                            if ( this.check.typeOf( _name, 'string' ) == false && this.check.typeOf( _name, 'number' ) == false ) {
+                                _name = `material.${ this.operations.create.id() }`
+
+                                this.log( `The name of the material has to be a string or a number. It was defaulted to "${ _name }"` ).error()
                             }
 
                             return {
-                                face: face
+                                standard: saveToLocal => {
+                                    const _sTL = saveToLocal ? saveToLocal : false
+
+                                    this.threeJS.materials.stored[ _name ] = new this.three.MeshStandardMaterial( _options )
+
+                                    if ( this.check.typeOf( _sTL, 'boolean' ) == true ) this.log( `Saved "${ _name }" [ Material ] to local storage` ).reg()
+                                },
+                                phong: saveToLocal => {
+                                    const _sTL = saveToLocal ? saveToLocal : false
+
+                                    this.threeJS.materials.stored[ _name ] = new this.three.MeshPhongMaterial( _options )
+
+                                    if ( this.check.typeOf( _sTL, 'boolean' ) == true ) this.log( `Saved "${ _name }" [ Material ] to local storage` ).reg()
+                                },
+                                basic: saveToLocal => {
+                                    const _sTL = saveToLocal ? saveToLocal : false
+
+                                    this.threeJS.materials.stored[ _name ] = new this.three.MeshBasicMaterial( _options )
+
+                                    if ( this.check.typeOf( _sTL, 'boolean' ) == true ) this.log( `Saved "${ _name }" [ Material ] to local storage` ).reg()
+                                },
                             }
+                        },
+                    },
+                    store: ( material, whereToStore, options ) => {
+                        const presets = {
+                            storage: whereToStore ? whereToStore : 'engine',
+                            name: material.name.length > 0 ? material.name : `material.${ this.operations.create.id( 11 ) }`
+                        }
+                  
+                        if ( options ) {
+                            const name = presets.name
+
+                            presets.name = options.name ? options.name : name
                         }
 
-                        return {
-                            basic: basic
-                        }
+                        if ( whereToStore != 'engine' || whereToStore != 'local' || whereToStore != 'engine local' ) whereToStore[ presets.name ] = material
                     },
+                    storeAll: () => {}
                 },
                 animations: {
                     animClass: class {
@@ -1498,6 +1685,59 @@
         } else {
             this.threeJS = {}
         }
+
+        /* simplexNoise stuff */
+        if ( typeof SimplexNoise ) {
+            this.simplexNoise = {
+                heightmap: {
+                    map: ( val, smin, smax, emin, emax ) => {
+                        const t = ( val - smin ) / ( smax - smin )
+
+                        return ( emax - emin ) * t + emin
+                    },
+                    noise: ( nx, ny, simplex ) => { return this.simplexNoise.heightmap.map( simplex.noise2D( nx, ny ), -1, 1, 0, 1 ) },
+                    octave: ( nx, ny, octaves, simplex ) => {
+                        let val = 0, freq = 1, max = 0, amp = 1
+                    
+                        for( let i = 0; i < octaves; i++ ) {
+                            val += this.simplexNoise.heightmap.noise( nx * freq, ny * freq, simplex ) * amp
+                            max += amp
+                            amp /= 2
+                            freq *= 2
+                        }
+
+                        return val / max
+                    },
+                    texture: ( width, height, simplex ) => {
+                        const canvas = document.createElement( 'canvas' )
+                        canvas.setAttribute( 'id', `debug-canvas-${ this.operations.create.id( 11 ) }` )
+                        canvas.setAttribute( 'width', width )
+                        canvas.setAttribute( 'height', height )
+                        document.body.appendChild( canvas )
+
+                        const context = canvas.getContext( '2d' )
+                        const cutoff = 0
+
+                        canvas.style.display = 'none'
+
+                        context.fillStyle = 'black'
+                        context.fillRect( 0, 0, width, height )
+
+                        for ( let i = 0; i <= width + 1; i++ ) {
+                            for ( let j = 0; j <= height + 1; j++ ) {
+                                const v = this.simplexNoise.heightmap.octave( i / ( width + 1 ), j / ( height + 1 ), 16, simplex )
+                                const per = `${ ( 100 * v ).toFixed( 2 ) }%`
+
+                                context.fillStyle = `rgb(${ per },${ per },${ per })`
+                                context.fillRect( i, j, 1, 1 )
+                            }
+                        }   
+        
+                        return [ context.getImageData( 0, 0, width, height), width, height ]
+                    },
+                }
+            }
+        } else this.simplexNoise = {}
         
         /* universal event manager */
         this.events = {
