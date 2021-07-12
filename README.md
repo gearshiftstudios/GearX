@@ -102,33 +102,19 @@ With just a few more properties and attributes you can make your dropdown look p
 ### Referencing Elements
 Now you can reference or change an ***element*** or ***elements*** properties in 5 different ways.
 ```javascript
-/*
-    Finds an element with the ID of 'my-element' and returns
-    the methods built-in the library for elements.
-*/
+
+// Finds an element with the ID of 'my-element' and returns the methods built-in the library for elements.
 gearz.element( 'my-element', 'id' ) 
 
-/*
-    Finds an element with the query of '#my-query' and returns
-    the methods built-in the library for elements.
-*/
+// Finds an element with the query of '#my-query' and returns the methods built-in the library for elements.
 gearz.element( '#my-query', 'q' )
 
-/*
-    Finds all elements with the query of '.my-query' and returns
-    them as an array
-*/
+// Finds all elements with the query of '.my-query' and returns them as an array
 gearz.element( '.my-query', 'qAll' )
 
-/*
-    Finds all elements with the tag of 'MY-TAG' and returns
-    them as an array
-*/
+// Finds all elements with the tag of 'MY-TAG' and returns them as an array
 gearz.element( 'MY-TAG', 'tag' )
 
-/*
-    Finds all elements with the class of 'my-class' and returns
-    them as an array
-*/
+// Finds all elements with the class of 'my-class' and returns them as an array
 gearz.element( 'my-class', 'cl' )
 ```
