@@ -100,7 +100,7 @@ gearz.element( 'body' ).add.dropdown( 'sports-drop', [ [ 'Football', 0 ], [ 'Bas
 With just a few more properties and attributes you can make your dropdown look professional.
 
 ### Referencing Elements
-Now you can reference or change an ***element*** or ***elements*** properties in 5 different ways.
+Now you can reference, change, and retrieve an ***element*** or ***elements*** properties in 5 different ways.
 ```javascript
 
 // Finds an element with the ID of 'my-element' and returns the methods built-in the library for elements.
