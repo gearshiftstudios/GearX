@@ -98,3 +98,23 @@ You can make dropdown menus with custom UI based upon the properties you attribu
 gearz.element( 'body' ).add.dropdown( 'sports-drop', [ [ 'Football', 0 ], [ 'Baseball', 1 ], [ 'Basketball', 2 ] ], {}, { width: 13, mL: 1, mT: 1 }, { tI: 'Pick a Sport' }, {}, {} )
 ```
 With just a few more properties and attributes you can make your dropdown look professional.
+
+### Manipulating Elements
+Now you can reference, change, and retrieve an ***element*** or ***elements*** properties in 5 different ways.
+```javascript
+
+// Finds an element with the ID of 'my-element' and returns the methods built-in the library for elements.
+gearz.element( 'my-element', 'id' ) 
+
+// Finds an element with the query of '#my-query' and returns the methods built-in the library for elements.
+gearz.element( '#my-query', 'q' )
+
+// Finds all elements with the query of '.my-query' and returns them as an array
+gearz.element( '.my-query', 'qAll' )
+
+// Finds all elements with the tag of 'MY-TAG' and returns them as an array
+gearz.element( 'MY-TAG', 'tag' )
+
+// Finds all elements with the class of 'my-class' and returns them as an array
+gearz.element( 'my-class', 'cl' )
+```
